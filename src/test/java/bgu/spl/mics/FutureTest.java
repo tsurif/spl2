@@ -18,30 +18,40 @@ public class FutureTest {
     private Future<String> future;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         future = new Future<>();
     }
 
+    @AfterEach
+    void breakUp(){ future = null;}
+
     @Test
-    public void testResolve(){
+    void testResolve(){
         String str = "someResult";
         future.resolve(str);
         assertTrue(future.isDone());
         assertTrue(str.equals(future.get()));
     }
     @Test
-    public void testGet(){
+    void getTest(){
 
     }
 
     @Test
-    public void testGet(long timeout, TimeUnit timeUnit){
+    void getTest(long timeout, TimeUnit timeUnit){
 
     }
 
     @Test
-    public void testIsDone(){
+    void isDoneTest(){
+        String str="someResult";
+        future.resolve(str);
+        assertTrue(future.isDone());
+    }
 
+    @Test
+    void isNotDoneTest(){
+        assertFalse(future.isDone());
     }
 
 }
