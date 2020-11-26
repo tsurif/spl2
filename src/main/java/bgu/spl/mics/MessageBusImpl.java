@@ -18,7 +18,7 @@ public class MessageBusImpl implements MessageBus {
 		
     }
 
-	@Override @SuppressWarnings("unchecked")
+	@Override
 	public <T> void complete(Event<T> e, T result) {
 		
 	}

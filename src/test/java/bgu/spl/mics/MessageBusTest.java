@@ -11,9 +11,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class MessageBusTest {
 
     private MessageBusImpl messageBus;
+    private MessageEventMock<String> messageEventMock;
+    private MessageBroadCastMock messageBroadCastMock;
+
 
     @BeforeEach
-    void setUp(){messageBus=new MessageBusImpl();}
+    void setUp(){
+        messageBus=new MessageBusImpl();
+        messageEventMock=new MessageEventMock<>();
+        messageBroadCastMock=new MessageBroadCastMock();
+
+    }
 
     @Test
     void subscribeEvent() {
