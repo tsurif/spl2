@@ -32,8 +32,14 @@ public class FutureTest {
     void getTest(){
         String str="someResult";
         future.resolve(str);
-        assertNotNull(future.get());
         assertEquals(future.get(), str);
+    }
+
+    @Test
+    void getTest_NOT_Null_Result(){
+        String str="someResult";
+        future.resolve(str);
+        assertNotNull(future.get());
     }
 
     @Test
