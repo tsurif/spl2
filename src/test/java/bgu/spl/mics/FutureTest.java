@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterAll;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.TimeUnit;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +28,6 @@ public class FutureTest {
         assertTrue(future.isDone());
         assertEquals(future.get(), str);
     }
-
     @Test
     void getTest(){
         String str="someResult";
@@ -51,6 +49,7 @@ public class FutureTest {
 //        t.start();
 //        assertTrue(Thread.holdsLock(t));
 //    }
+
 //    @Test
 //    void getTest_With_Time_Unit_Without_Blocking(){
 //        String str = "someResult";
@@ -58,11 +57,7 @@ public class FutureTest {
 //        future.resolve(str);
 //        assertEquals(future.get(100,TimeUnit.MILLISECONDS),str);
 //    }
-//
-//    @Test
-//    void getTest_With_Time_Unit_With_Blocking(){
-//
-//    }
+
 //    @Test
 //    void getTestWithTimeUnit(){
 //        Thread t1 = new Thread(()-> {
