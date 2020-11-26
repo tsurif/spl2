@@ -1,6 +1,5 @@
 package bgu.spl.mics;
 
-import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -63,6 +62,23 @@ public class FutureTest {
 //    @Test
 //    void getTest_With_Time_Unit_With_Blocking(){
 //
+//    }
+//    @Test
+//    void getTestWithTimeUnit(){
+//        Thread t1 = new Thread(()-> {
+//            future.get();
+//        });
+//        Thread t2 = new Thread(()-> {
+//            assertNull(future.get(1000,TimeUnit.MILLISECONDS));
+//        });
+//        t1.start();
+//        try {
+//            Thread.sleep(4000);
+//        }
+//        catch (InterruptedException e){
+//
+//        }
+//         t2.start();
 //    }
 
     @Test
