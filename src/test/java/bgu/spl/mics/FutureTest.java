@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,17 +28,42 @@ public class FutureTest {
         String str = "someResult";
         future.resolve(str);
         assertTrue(future.isDone());
-        assertTrue(str.equals(future.get()));
+        assertEquals(future.get(), str);
     }
+
     @Test
     void getTest(){
-
+        String str="someResult";
+        future.resolve(str);
+        assertNotNull(future.get());
+        assertEquals(future.get(), str);
     }
 
     @Test
-    void getTest(long timeout, TimeUnit timeUnit){
-
+    void getTest_Null_Result(){
+        assertNull(future.get());
     }
+
+//    @Test
+//    void getTest_Block_Thread(){
+//        Thread t=new Thread(()->{
+//            future.get();
+//        });
+//        t.start();
+//        assertTrue(Thread.holdsLock(t));
+//    }
+//    @Test
+//    void getTest_With_Time_Unit_Without_Blocking(){
+//        String str = "someResult";
+//        assertFalse(future.isDone());
+//        future.resolve(str);
+//        assertEquals(future.get(100,TimeUnit.MILLISECONDS),str);
+//    }
+//
+//    @Test
+//    void getTest_With_Time_Unit_With_Blocking(){
+//
+//    }
 
     @Test
     void isDoneTest(){

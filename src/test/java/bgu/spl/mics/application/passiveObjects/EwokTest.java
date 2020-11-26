@@ -13,7 +13,7 @@ class EwokTest {
     private Ewok ewok;
 
     @BeforeEach
-    public void setUP(){ewok=new Ewok();}
+    public void setUp(){ewok=new Ewok();}
 
     @Test
     void acquireTest() {
