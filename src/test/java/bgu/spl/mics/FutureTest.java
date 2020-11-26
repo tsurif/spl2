@@ -34,10 +34,23 @@ public class FutureTest {
 
     }
 
-    @Test
-    void getTest(long timeout, TimeUnit timeUnit){
-
-    }
+//    @Test
+//    void getTestWithTimeUnit(){
+//        Thread t1 = new Thread(()-> {
+//            future.get();
+//        });
+//        Thread t2 = new Thread(()-> {
+//            assertNull(future.get(1000,TimeUnit.MILLISECONDS));
+//        });
+//        t1.start();
+//        try {
+//            Thread.sleep(4000);
+//        }
+//        catch (InterruptedException e){
+//
+//        }
+//         t2.start();
+//    }
 
     @Test
     void isDoneTest(){
