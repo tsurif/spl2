@@ -15,9 +15,6 @@ class EwokTest {
     @BeforeEach
     public void setUP(){ewok=new Ewok();}
 
-    @AfterEach
-    void breakUp(){ ewok = null;}
-
     @Test
     void acquireTest() {
         ewok.acquire();

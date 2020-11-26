@@ -22,9 +22,6 @@ public class FutureTest {
         future = new Future<>();
     }
 
-    @AfterEach
-    void breakUp(){ future = null;}
-
     @Test
     void testResolve(){
         String str = "someResult";
