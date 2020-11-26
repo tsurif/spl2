@@ -38,14 +38,14 @@ public class Future<T> {
      * Resolves the result of this Future object.
      */
 	public void resolve (T result) {
-		
+		this.result=result;
 	}
 	
 	/**
      * @return true if this object has been resolved, false otherwise
      */
 	public boolean isDone() {
-		return false;
+		return isDone;
 	}
 	
 	/**
