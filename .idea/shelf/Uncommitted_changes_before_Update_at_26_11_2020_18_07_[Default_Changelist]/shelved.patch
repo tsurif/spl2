@@ -1,0 +1,39 @@
+Index: src/test/java/bgu/spl/mics/FutureTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package bgu.spl.mics;\r\n\r\nimport com.google.gson.internal.bind.util.ISO8601Utils;\r\nimport org.junit.jupiter.api.BeforeEach;\r\nimport org.junit.jupiter.api.AfterEach;\r\nimport org.junit.jupiter.api.BeforeAll;\r\nimport org.junit.jupiter.api.AfterAll;\r\n\r\nimport org.junit.jupiter.api.Test;\r\n\r\nimport java.util.concurrent.TimeUnit;\r\n\r\n\r\nimport static org.junit.jupiter.api.Assertions.*;\r\n\r\n\r\npublic class FutureTest {\r\n\r\n    private Future<String> future;\r\n\r\n    @BeforeEach\r\n    void setUp(){\r\n        future = new Future<>();\r\n    }\r\n\r\n    @Test\r\n    void testResolve(){\r\n        String str = \"someResult\";\r\n        future.resolve(str);\r\n        assertTrue(future.isDone());\r\n        assertEquals(future.get(), str);\r\n    }\r\n\r\n    @Test\r\n    void getTest(){\r\n        String str=\"someResult\";\r\n        future.resolve(str);\r\n        assertNotNull(future.get());\r\n        assertEquals(future.get(), str);\r\n    }\r\n\r\n    @Test\r\n    void getTest_Null_Result(){\r\n        assertNull(future.get());\r\n    }\r\n\r\n//    @Test\r\n//    void getTest_Block_Thread(){\r\n//        Thread t=new Thread(()->{\r\n//            future.get();\r\n//        });\r\n//        t.start();\r\n//        assertTrue(Thread.holdsLock(t));\r\n//    }\r\n//    @Test\r\n//    void getTest_With_Time_Unit_Without_Blocking(){\r\n//        String str = \"someResult\";\r\n//        assertFalse(future.isDone());\r\n//        future.resolve(str);\r\n//        assertEquals(future.get(100,TimeUnit.MILLISECONDS),str);\r\n//    }\r\n//\r\n//    @Test\r\n//    void getTest_With_Time_Unit_With_Blocking(){\r\n//\r\n//    }\r\n\r\n    @Test\r\n    void isDoneTest(){\r\n        String str=\"someResult\";\r\n        future.resolve(str);\r\n        assertTrue(future.isDone());\r\n    }\r\n\r\n    @Test\r\n    void isNotDoneTest(){\r\n        assertFalse(future.isDone());\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/bgu/spl/mics/FutureTest.java	(revision 5c1e77623f4538b43f482f12d91f1693bb7d16b8)
++++ src/test/java/bgu/spl/mics/FutureTest.java	(date 1606406835399)
+@@ -1,6 +1,5 @@
+ package bgu.spl.mics;
+ 
+-import com.google.gson.internal.bind.util.ISO8601Utils;
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.AfterEach;
+ import org.junit.jupiter.api.BeforeAll;
+@@ -30,7 +29,6 @@
+         assertTrue(future.isDone());
+         assertEquals(future.get(), str);
+     }
+-
+     @Test
+     void getTest(){
+         String str="someResult";
+Index: src/main/java/bgu/spl/mics/Future.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package bgu.spl.mics;\r\n\r\nimport java.util.concurrent.TimeUnit;\r\n\r\n/**\r\n * A Future object represents a promised result - an object that will\r\n * eventually be resolved to hold a result of some operation. The class allows\r\n * Retrieving the result once it is available.\r\n * \r\n * Only private methods may be added to this class.\r\n * No public constructor is allowed except for the empty constructor.\r\n */\r\npublic class Future<T> {\r\n\tprivate boolean isDone;\r\n    private T result;\r\n\t\r\n\t/**\r\n\t * This should be the the only public constructor in this class.\r\n\t */\r\n\tpublic Future() {\r\n\t\t\r\n\t}\r\n\t\r\n\t/**\r\n     * retrieves the result the Future object holds if it has been resolved.\r\n     * This is a blocking method! It waits for the computation in case it has\r\n     * not been completed.\r\n     * <p>\r\n     * @return return the result of type T if it is available, if not wait until it is available.\r\n     * \t       \r\n     */\r\n\tpublic T get() {\r\n\t\t\r\n        return null; \r\n\t}\r\n\t\r\n\t/**\r\n     * Resolves the result of this Future object.\r\n     */\r\n\tpublic void resolve (T result) {\r\n\t\tthis.result=result;\r\n\t}\r\n\t\r\n\t/**\r\n     * @return true if this object has been resolved, false otherwise\r\n     */\r\n\tpublic boolean isDone() {\r\n\t\treturn isDone;\r\n\t}\r\n\t\r\n\t/**\r\n     * retrieves the result the Future object holds if it has been resolved,\r\n     * This method is non-blocking, it has a limited amount of time determined\r\n     * by {@code timeout}\r\n     * <p>\r\n     * @param timeout \tthe maximal amount of time units to wait for the result.\r\n     * @param unit\t\tthe {@link TimeUnit} time units to wait.\r\n     * @return return the result of type T if it is available, if not, \r\n     * \t       wait for {@code timeout} TimeUnits {@code unit}. If time has\r\n     *         elapsed, return null.\r\n     */\r\n\tpublic T get(long timeout, TimeUnit unit) {\r\n\t\t\r\n        return null;\r\n\t}\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/bgu/spl/mics/Future.java	(revision 5c1e77623f4538b43f482f12d91f1693bb7d16b8)
++++ src/main/java/bgu/spl/mics/Future.java	(date 1606406658745)
+@@ -65,3 +65,5 @@
+ 	}
+ 
+ }
++
++
