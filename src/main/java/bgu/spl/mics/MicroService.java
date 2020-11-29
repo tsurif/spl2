@@ -19,14 +19,17 @@ package bgu.spl.mics;
  * <p>
  */
 public abstract class MicroService implements Runnable { 
-    String name;
+    public String name;
+    protected boolean isRegistered;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
      */
     public MicroService(String name) {
-    	
+    	this.name = name;
+    	isRegistered=false;
+
     }
 
     /**
@@ -51,7 +54,12 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-    	
+    	if(!isRegistered){
+    	    isRegistered=true;
+    	    MessageBusImpl.getInstance().register(this);
+        }
+
+
     }
 
     /**

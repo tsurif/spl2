@@ -1,7 +1,9 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.messages.MockEvent;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,42 +13,49 @@ class MessageBusTest {
 
     private MessageBusImpl messageBus;
 
-    private MicroServiceMock microServiceMock;
     private CallbackMock<BroadCastMock> callbackBroadCast;
     private CallbackMock<AttackEvent> callBackEvent;
 
+    private MicroServiceMock ms1;
+    private MicroServiceMock ms2;
+
+    private AttackEvent attackEvent;
+    private BroadCastMock broadCast;
+
     @BeforeEach
     void setUp(){
-        messageBus=new MessageBusImpl();
+        messageBus=MessageBusImpl.getInstance();
         callbackBroadCast =new CallbackMock<BroadCastMock>();
         callBackEvent=new CallbackMock<AttackEvent>();
+
+        MicroService ms1=new MicroServiceMock("Test1");
+        MicroService ms2=new MicroServiceMock("Test2");
+
+        attackEvent = new AttackEvent();
+        broadCast = new BroadCastMock();
     }
 
+    @AfterEach
+    void TearDown(){
+
+    }
     @Test
     void subscribeEvent() { //check if the sendEvent dont return null after we add 1 subscriber
-        AttackEvent attackEvent=new AttackEvent();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         assertNotNull(messageBus.sendEvent(attackEvent));
     }
 
     @Test
     void subscribeEvent_Different_Type_Null(){ //check if we call a different event we get null from the sendEvent because the microService subscribed to another event
-
-        MicroService ms=new MicroServiceMock("Test");
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
-
         MockEvent mockEvent=new MockEvent();
+
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         assertNull(messageBus.sendEvent(mockEvent));
     }
 
     @Test
     void subscribeBroadcast() { //check if the callback was called by the microService after it was registered
-        BroadCastMock broadCast = new BroadCastMock();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
+        ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         messageBus.sendBroadcast(broadCast);
 
         assertTrue(callbackBroadCast.isCalled);
@@ -54,11 +63,7 @@ class MessageBusTest {
 
     @Test
     void sendBroadcast_2_Subscribers() { //send broadcast to more then 1 microservice subscribed to, check if all got the message
-        BroadCastMock broadCast = new BroadCastMock();
         CallbackMock callbackBroadCast2 =new CallbackMock<BroadCastMock>();
-
-        MicroService ms1=new MicroServiceMock("Test1");
-        MicroService ms2=new MicroServiceMock("Test2");
 
         ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         ms2.subscribeBroadcast(BroadCastMock.class, callbackBroadCast2);
@@ -69,10 +74,7 @@ class MessageBusTest {
 
     @Test
     void SendBroadcast_2_Subscribers_Not_Called_The_Wrong_One(){ //subscribe 2 differents microservices to different broadcast and check if the one shouldn't get it did not get it
-        BroadCastMock broadCast = new BroadCastMock();
         CallbackMock<BroadCastMock2> cb=new CallbackMock<>();
-        MicroService ms1=new MicroServiceMock("Test1");
-        MicroService ms2=new MicroServiceMock("Test2");
 
         ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         ms2.subscribeBroadcast(BroadCastMock2.class, cb);
@@ -83,16 +85,12 @@ class MessageBusTest {
 
     @Test
     void sendEvent_Null() { //check that the sendEvent return null if there are no subscribers
-        AttackEvent attackEvent=new AttackEvent();
         assertNull(messageBus.sendEvent(attackEvent));
     }
 
     @Test
     void sendEvent() { //check if the callBack was called after the sendEvent
-        AttackEvent attackEvent=new AttackEvent();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(attackEvent);
 
         assertTrue(callBackEvent.isCalled);
@@ -100,10 +98,9 @@ class MessageBusTest {
 
     @Test
     void sendEvent_Different_Type(){ //check if we call a different event which the microService not subscribed, we dont run its callback
-        MicroService ms=new MicroServiceMock("Test");
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
-
         MockEvent mockEvent=new MockEvent();
+
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(mockEvent);
 
         assertFalse(callBackEvent.isCalled);
@@ -111,43 +108,31 @@ class MessageBusTest {
 
     @Test
     void complete() { //TODO not sure 100% its the correct logic
-        AttackEvent attackEvent=new AttackEvent();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         Future<Boolean> future=messageBus.sendEvent(attackEvent);
-        ms.complete(attackEvent,true);
+        ms1.complete(attackEvent,true);
 
         assertTrue(future.isDone());
     }
 
     @Test
     void unregister_From_Event() { //check if we unregister microservice from event
-        AttackEvent attackEvent=new AttackEvent();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
-        messageBus.unregister(ms);
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
+        messageBus.unregister(ms1);
         messageBus.sendEvent(attackEvent);
 
         assertFalse(callBackEvent.isCalled);
     }
     @Test
     void unregister_From_Event_Null() { //check if we unregister microservice from event, his callback does not activate
-        AttackEvent attackEvent=new AttackEvent();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
-        messageBus.unregister(ms);
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
+        messageBus.unregister(ms1);
 
         assertNull(messageBus.sendEvent(attackEvent));
     }
     @Test
     void unregister_2_subscribers_NotNull() { //check if we subscribed 2 microservices, and  unregister 1 the queue is not empty
-        AttackEvent attackEvent=new AttackEvent();
-        CallbackMock cb =new CallbackMock<AttackEvent>();
-        MicroService ms1=new MicroServiceMock("Test1");
-        MicroService ms2=new MicroServiceMock("Test2");
+        CallbackMock<AttackEvent> cb =new CallbackMock<>();
 
         ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         ms2.subscribeEvent(AttackEvent.class,cb);
@@ -158,11 +143,8 @@ class MessageBusTest {
     }
     @Test
     void unregister_From_BroadCast() { //check if we unregister microservice from broadcast, his callback does not activate
-        BroadCastMock broadCast = new BroadCastMock();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
-        messageBus.unregister(ms);
+        ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
+        messageBus.unregister(ms1);
 
         messageBus.sendBroadcast(broadCast);
 
@@ -170,14 +152,11 @@ class MessageBusTest {
     }
     @Test
     void awaitMessage(){
-        AttackEvent attackEvent=new AttackEvent();
-        MicroService ms=new MicroServiceMock("Test");
-
-        ms.subscribeEvent(AttackEvent.class,callBackEvent);
+        ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(attackEvent);
 
         try {
-            Message msg=messageBus.awaitMessage(ms);
+            Message msg=messageBus.awaitMessage(ms1);
             assertEquals(attackEvent,msg);
         }
         catch (InterruptedException e) {
