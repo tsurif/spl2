@@ -148,4 +148,18 @@ class MessageBusTest {
         messageBus.sendBroadcast(broadCast);
         assertFalse(callbackBroadCast.isCalled);
     }
+    @Test
+    void awaitMessage(){
+        AttackEvent attackEvent=new AttackEvent();
+        MicroService ms=new MicroServiceMock("Test");
+        ms.subscribeEvent(AttackEvent.class,callBackEvent);
+        messageBus.sendEvent(attackEvent);
+        try {
+            Message msg=messageBus.awaitMessage(ms);
+            assertEquals(attackEvent,msg);
+        } catch (InterruptedException e) {
+            assertTrue(true);
+        }
+
+    }
 }
