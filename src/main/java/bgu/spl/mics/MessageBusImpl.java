@@ -1,11 +1,23 @@
 package bgu.spl.mics;
 
+import javafx.util.Pair;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Vector;
+
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+
+
+	private HashMap<Class<? extends Message>, Pair<Vector<Queue>, Integer>> messageTypeHash;
+	private HashMap<MicroService, Queue> registeredHash;
+
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
@@ -15,8 +27,14 @@ public class MessageBusImpl implements MessageBus {
 	public static MessageBusImpl getInstance(){
 		return MessageBusHolder.instance;
 	}
+
+
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+		if(!messageTypeHash.containsKey(type)){
+			messageTypeHash.put(type,new Pair<>(new Vector<Queue>(),0));
+		}
+		if(!messageTypeHash.get(type).getKey().contains(m)) messageTypeHash.get(type).getKey().add(registeredHash.get(m));
 		
 	}
 
@@ -44,7 +62,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		
+		registeredHash.put(m,new LinkedList<Message>());//TODO ??change that to something thread - safety???
 	}
 
 	@Override
