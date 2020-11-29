@@ -23,30 +23,35 @@ class MessageBusTest {
     }
 
     @Test
-    void subscribeEvent() { //check if the sendEvent not null after we add 1 subscriber
+    void subscribeEvent() { //check if the sendEvent dont return null after we add 1 subscriber
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         assertNotNull(messageBus.sendEvent(attackEvent));
     }
 
     @Test
-    void subscribeEvent_Different_Type_Null(){ //check if we call a different event we get return null from the sendEvent because the microService subscribed to another event
+    void subscribeEvent_Different_Type_Null(){ //check if we call a different event we get null from the sendEvent because the microService subscribed to another event
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
+
         MockEvent mockEvent=new MockEvent();
         assertNull(messageBus.sendEvent(mockEvent));
     }
 
     @Test
-    void subscribeBroadcast() { //check if the callback was called by the microService after it was registerd
+    void subscribeBroadcast() { //check if the callback was called by the microService after it was registered
         BroadCastMock broadCast = new BroadCastMock();
         MicroService ms=new MicroServiceMock("Test");
+
         ms.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         messageBus.sendBroadcast(broadCast);
+
         assertTrue(callbackBroadCast.isCalled);
     }
 
@@ -54,10 +59,13 @@ class MessageBusTest {
     void sendBroadcast_2_Subscribers() { //send broadcast to more then 1 microservice subscribed to, check if all got the message
         BroadCastMock broadCast = new BroadCastMock();
         CallbackMock callbackBroadCast2 =new CallbackMock<BroadCastMock>();
+
         MicroService ms1=new MicroServiceMock("Test1");
         MicroService ms2=new MicroServiceMock("Test2");
+
         ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         ms2.subscribeBroadcast(BroadCastMock.class, callbackBroadCast2);
+
         messageBus.sendBroadcast(broadCast);
         assertTrue(callbackBroadCast.isCalled && callbackBroadCast2.isCalled);
     }
@@ -68,8 +76,10 @@ class MessageBusTest {
         CallbackMock<BroadCastMock2> cb=new CallbackMock<>();
         MicroService ms1=new MicroServiceMock("Test1");
         MicroService ms2=new MicroServiceMock("Test2");
+
         ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         ms2.subscribeBroadcast(BroadCastMock2.class, cb);
+
         messageBus.sendBroadcast(broadCast);
         assertFalse(cb.isCalled);
     }
@@ -84,20 +94,24 @@ class MessageBusTest {
     void sendEvent() { //check if the callBack was called after the sendEvent
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(attackEvent);
+
         assertTrue(callBackEvent.isCalled);
     }
 
     @Test
     void sendEvent_Different_Type(){ //check if we call a different event which the microService not subscribed, we dont run its callback
-        AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
+
         MockEvent mockEvent=new MockEvent();
         messageBus.sendEvent(mockEvent);
+
         assertFalse(callBackEvent.isCalled);
     }
 
@@ -105,9 +119,11 @@ class MessageBusTest {
     void complete() { //TODO not sure 100% its the correct logic
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         Future<Boolean> future=messageBus.sendEvent(attackEvent);
         ms.complete(attackEvent,true);
+
         assertTrue(future.isDone());
     }
 
@@ -115,17 +131,21 @@ class MessageBusTest {
     void unregister_From_Event() { //check if we unregister microservice from event
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.unregister(ms);
         messageBus.sendEvent(attackEvent);
+
         assertFalse(callBackEvent.isCalled);
     }
     @Test
     void unregister_From_Event_Null() { //check if we unregister microservice from event, his callback does not activate
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.unregister(ms);
+
         assertNull(messageBus.sendEvent(attackEvent));
     }
     @Test
@@ -134,30 +154,39 @@ class MessageBusTest {
         CallbackMock cb =new CallbackMock<AttackEvent>();
         MicroService ms1=new MicroServiceMock("Test1");
         MicroService ms2=new MicroServiceMock("Test2");
+
         ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         ms2.subscribeEvent(AttackEvent.class,cb);
+
         messageBus.unregister(ms1);
+
         assertNotNull(messageBus.sendEvent(attackEvent));
     }
     @Test
     void unregister_From_BroadCast() { //check if we unregister microservice from broadcast, his callback does not activate
         BroadCastMock broadCast = new BroadCastMock();
         MicroService ms=new MicroServiceMock("Test");
+
         ms.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         messageBus.unregister(ms);
+
         messageBus.sendBroadcast(broadCast);
+
         assertFalse(callbackBroadCast.isCalled);
     }
     @Test
     void awaitMessage(){
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
+
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(attackEvent);
+
         try {
             Message msg=messageBus.awaitMessage(ms);
             assertEquals(attackEvent,msg);
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             assertTrue(true);
         }
 

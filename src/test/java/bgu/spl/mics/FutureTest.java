@@ -47,41 +47,6 @@ public class FutureTest {
         assertNull(future.get());
     }
 
-//    @Test
-//    void getTest_Block_Thread(){
-//        Thread t=new Thread(()->{
-//            future.get();
-//        });
-//        t.start();
-//        assertTrue(Thread.holdsLock(t));
-//    }
-
-//    @Test
-//    void getTest_With_Time_Unit_Without_Blocking(){
-//        String str = "someResult";
-//        assertFalse(future.isDone());
-//        future.resolve(str);
-//        assertEquals(future.get(100,TimeUnit.MILLISECONDS),str);
-//    }
-
-//    @Test
-//    void getTestWithTimeUnit(){
-//        Thread t1 = new Thread(()-> {
-//            future.get();
-//        });
-//        Thread t2 = new Thread(()-> {
-//            assertNull(future.get(1000,TimeUnit.MILLISECONDS));
-//        });
-//        t1.start();
-//        try {
-//            Thread.sleep(4000);
-//        }
-//        catch (InterruptedException e){
-//
-//        }
-//         t2.start();
-//    }
-
     @Test
     void isDoneTest(){
         String str="someResult";
