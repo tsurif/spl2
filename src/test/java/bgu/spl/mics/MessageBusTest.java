@@ -26,7 +26,6 @@ class MessageBusTest {
     void subscribeEvent() { //check if the sendEvent not null after we add 1 subscriber
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
-        messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         assertNotNull(messageBus.sendEvent(attackEvent));
     }
@@ -35,7 +34,6 @@ class MessageBusTest {
     void subscribeEvent_Different_Type_Null(){ //check if we call a different event we get return null from the sendEvent because the microService subscribed to another event
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
-        messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         MockEvent mockEvent=new MockEvent();
         assertNull(messageBus.sendEvent(mockEvent));
@@ -84,7 +82,6 @@ class MessageBusTest {
     void sendEvent() { //check if the callBack was called after the sendEvent
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
-        messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(attackEvent);
         assertTrue(callBackEvent.isCalled);
@@ -94,7 +91,6 @@ class MessageBusTest {
     void sendEvent_Different_Type(){ //check if we call a different event which the microService not subscribed, we dont run its callback
         AttackEvent attackEvent=new AttackEvent();
         MicroService ms=new MicroServiceMock("Test");
-        messageBus.register(ms);
         ms.subscribeEvent(AttackEvent.class,callBackEvent);
         MockEvent mockEvent=new MockEvent();
         messageBus.sendEvent(mockEvent);
