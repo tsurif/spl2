@@ -102,8 +102,10 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		
-		return null;
+		//blocking??
+		Queue<Message> msQueue = registeredHash.get(m);
+		while(msQueue.isEmpty()) wait();//TODO: how do we make thread to wait
+		return msQueue.remove();
 	}
 
 //	public void restart(){

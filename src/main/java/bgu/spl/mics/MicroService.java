@@ -28,6 +28,7 @@ public abstract class MicroService implements Runnable {
     private boolean isRegistered;
     private boolean isTerminated;
     private HashMap<Class<? extends Message>, Callback> hashMap;
+//    private HashMap<Class<? extends Message>, Object> ;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -143,8 +144,9 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-    	MessageBusImpl.getInstance().complete(e, result);
+        MessageBusImpl.getInstance().complete(e, result);
     }
+
     /**
      * this method is called once when the event loop starts.
      */
@@ -179,7 +181,8 @@ public abstract class MicroService implements Runnable {
     	while(isTerminated) {
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
-                hashMap.get(message.getClass()).call(message);
+                Callback callback = hashMap.get(message.getClass());
+                callback.call(message);
             }catch (InterruptedException e){
                 //terminate()
             }
