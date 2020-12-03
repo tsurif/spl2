@@ -17,12 +17,15 @@ public class MessageBusImpl implements MessageBus {
 
 	private HashMap<Class<? extends Message>, Queue<Queue<Message>>> messageTypeHash;
 	private HashMap<MicroService, Queue<Message>> registeredHash;
+	private HashMap<Event<?>,Future<?>> futureHashMap;
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
 	private MessageBusImpl(){
-
+		messageTypeHash=new HashMap<>();
+		registeredHash=new HashMap<>();
+		futureHashMap=new HashMap<>();
 	}
 	public static MessageBusImpl getInstance(){
 		return MessageBusHolder.instance;
@@ -56,7 +59,13 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		
+		if(!messageTypeHash.containsKey(b.getClass())){
+			//throw error - no one subscribe to this broadcast
+		}
+		Queue<Queue<Message>> subscribersQueue=messageTypeHash.get(b.getClass());
+		for (Queue<Message> elem:subscribersQueue) {
+			elem.add(b);
+		}
 	}
 
 	
