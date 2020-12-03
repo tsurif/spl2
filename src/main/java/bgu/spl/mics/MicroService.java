@@ -1,6 +1,9 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.AttackEvent;
+
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -22,9 +25,10 @@ import java.util.HashMap;
  */
 public abstract class MicroService implements Runnable { 
     public String name;
-    protected boolean isRegistered;
+    private boolean isRegistered;
+    private boolean isTerminated;
 
-    private HashMap<Class, Callback> hashMap;
+    private HashMap<Class<? extends Message>, Callback<? extends Message>> hashMap;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -33,6 +37,7 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
     	this.name = name;
     	isRegistered=false;
+    	isTerminated=false;
 
     	hashMap = new HashMap<>();
     }
@@ -59,10 +64,10 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-    	if(!isRegistered){
-    	    isRegistered=true;
-    	    MessageBusImpl.getInstance().register(this);
-        }
+//    	if(!isRegistered){
+//    	    isRegistered=true;
+//    	    MessageBusImpl.getInstance().register(this);
+//        }
     	if(!hashMap.containsKey(type)) {
             MessageBusImpl.getInstance().subscribeEvent(type,this);
             hashMap.put(type, callback);
@@ -91,10 +96,10 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-        if(!isRegistered){
-            isRegistered=true;
-            MessageBusImpl.getInstance().register(this);
-        }
+//        if(!isRegistered){
+//            isRegistered=true;
+//
+//        }
         if(!hashMap.containsKey(type)) {
             MessageBusImpl.getInstance().subscribeBroadcast(type, this);
             hashMap.put(type, callback);
@@ -153,7 +158,7 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-    	
+    	isTerminated = true;
     }
 
     /**
@@ -170,15 +175,23 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-    	while(true) {
+        //Registration
+        MessageBusImpl.getInstance().register(this);
+        // initialization
+        initialize();
+
+    	while(isTerminated) {
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
-                //hashMap.get(message.getClass()).call();
+                hashMap.get(message.getClass()).call(message.getClass());
             }catch (InterruptedException e){
                 //bla bla bla bla bentayim
             }
 
         }
+
+    	//unregistration
     }
+    protected final <M extends Message> void x(Class<E> type, Callback<E> callback) {}
 
 }
