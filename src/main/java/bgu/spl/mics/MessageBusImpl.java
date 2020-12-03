@@ -17,12 +17,15 @@ public class MessageBusImpl implements MessageBus {
 
 	private HashMap<Class<? extends Message>, Queue<Queue<Message>>> messageTypeHash;
 	private HashMap<MicroService, Queue<Message>> registeredHash;
+	private HashMap<Event<?>,Future<?>> futureHashMap;
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
 	private MessageBusImpl(){
-
+		messageTypeHash=new HashMap<>();
+		registeredHash=new HashMap<>();
+		futureHashMap=new HashMap<>();
 	}
 	public static MessageBusImpl getInstance(){
 		return MessageBusHolder.instance;
