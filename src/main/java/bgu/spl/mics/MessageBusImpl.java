@@ -39,7 +39,7 @@ public class MessageBusImpl implements MessageBus {
 
 		if(!messageTypeHash.get(type).contains(registeredHash.get(m)))
 			messageTypeHash.get(type).add(registeredHash.get(m));
-		
+
 	}
 
 	@Override
@@ -79,8 +79,10 @@ public class MessageBusImpl implements MessageBus {
 		subscribersQueue.add(msQueue);
 
 		msQueue.add(e);
+		Future<T> future = new Future<>();
+		futureHashMap.put(e,future);
 
-		return null;
+		return future;
 	}
 
 	@Override
@@ -98,4 +100,11 @@ public class MessageBusImpl implements MessageBus {
 		
 		return null;
 	}
+
+//	public void restart(){
+//		messageTypeHash.clear();
+//		registeredHash.clear();
+//		futureHashMap.clear();
+//
+//	}
 }

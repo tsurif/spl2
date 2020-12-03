@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class MicroService implements Runnable { 
     public String name;
-    //private boolean isRegistered;
+    private boolean isRegistered;
     private boolean isTerminated;
     private HashMap<Class<? extends Message>, Callback> hashMap;
 
@@ -35,7 +35,7 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
     	this.name = name;
-    	//isRegistered=false;
+    	isRegistered=false;
     	isTerminated=false;
 
     	hashMap = new HashMap<>();
@@ -63,10 +63,10 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-//    	if(!isRegistered){
-//    	    isRegistered=true;
-//    	    MessageBusImpl.getInstance().register(this);
-//        }
+    	if(!isRegistered){
+    	    isRegistered=true;
+    	    MessageBusImpl.getInstance().register(this);
+        }
     	if(!hashMap.containsKey(type)) {
             MessageBusImpl.getInstance().subscribeEvent(type,this);
             hashMap.put(type, callback);
@@ -95,10 +95,10 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-//        if(!isRegistered){
-//            isRegistered=true;
-//            MessageBusImpl.getInstance().register(this);
-//        }
+        if(!isRegistered){
+            isRegistered=true;
+            MessageBusImpl.getInstance().register(this);
+        }
         if(!hashMap.containsKey(type)) {
             MessageBusImpl.getInstance().subscribeBroadcast(type, this);
             hashMap.put(type, callback);

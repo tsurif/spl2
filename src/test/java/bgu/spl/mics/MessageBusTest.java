@@ -28,8 +28,8 @@ class MessageBusTest {
         callbackBroadCast =new CallbackMock<BroadCastMock>();
         callBackEvent=new CallbackMock<AttackEvent>();
 
-        MicroService ms1=new MicroServiceMock("Test1");
-        MicroService ms2=new MicroServiceMock("Test2");
+        ms1=new MicroServiceMock("Test1");
+        ms2=new MicroServiceMock("Test2");
 
         attackEvent = new AttackEvent();
         broadCast = new BroadCastMock();
@@ -37,7 +37,7 @@ class MessageBusTest {
 
     @AfterEach
     void TearDown(){
-
+        //messageBus.restart();
     }
     @Test
     void subscribeEvent() { //check if the sendEvent dont return null after we add 1 subscriber
