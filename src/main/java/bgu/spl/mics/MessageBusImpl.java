@@ -34,18 +34,23 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		if(!messageTypeHash.containsKey(type)){
+		if(!messageTypeHash.containsKey(type))
 			messageTypeHash.put(type,new LinkedList<>());
-		}
+
 		if(!messageTypeHash.get(type).contains(registeredHash.get(m)))
 			messageTypeHash.get(type).add(registeredHash.get(m));
-		
+
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		
-    }
+		if(!messageTypeHash.containsKey(type))
+			messageTypeHash.put(type,new LinkedList<>());
+
+		if(!messageTypeHash.get(type).contains(registeredHash.get(m)))
+			messageTypeHash.get(type).add(registeredHash.get(m));
+
+	}
 
 	@Override
 	public <T> void complete(Event<T> e, T result) {
@@ -66,8 +71,18 @@ public class MessageBusImpl implements MessageBus {
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		
+		if(!messageTypeHash.containsKey(e.getClass()))
         return null;
+
+		Queue<Queue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
+		Queue<Message> msQueue = subscribersQueue.remove();
+		subscribersQueue.add(msQueue);
+
+		msQueue.add(e);
+		Future<T> future = new Future<>();
+		futureHashMap.put(e,future);
+
+		return future;
 	}
 
 	@Override
@@ -90,4 +105,11 @@ public class MessageBusImpl implements MessageBus {
 		
 		return null;
 	}
+
+//	public void restart(){
+//		messageTypeHash.clear();
+//		registeredHash.clear();
+//		futureHashMap.clear();
+//
+//	}
 }
