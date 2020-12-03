@@ -54,7 +54,13 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		
+		if(!messageTypeHash.containsKey(b.getClass())){
+			//throw error - no one subscribe to this broadcast
+		}
+		Queue<Queue<Message>> subscribersQueue=messageTypeHash.get(b.getClass());
+		for (Queue<Message> elem:subscribersQueue) {
+			elem.add(b);
+		}
 	}
 
 	
