@@ -77,8 +77,13 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void unregister(MicroService m) {
-		
+		if(registeredHash.containsValue(m)) {
+			Queue<Message> mQueueRemoved = registeredHash.remove(m);
+			messageTypeHash.forEach((k, v) -> v.removeIf(q -> q.equals(mQueueRemoved)));
+		}
+
 	}
+
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
