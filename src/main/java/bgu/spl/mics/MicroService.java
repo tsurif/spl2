@@ -27,8 +27,7 @@ public abstract class MicroService implements Runnable {
     public String name;
     private boolean isRegistered;
     private boolean isTerminated;
-
-    private HashMap<Class<? extends Message>, Callback<? extends Message>> hashMap;
+    private HashMap<Class<? extends Message>, Callback> hashMap;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -183,7 +182,7 @@ public abstract class MicroService implements Runnable {
     	while(isTerminated) {
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
-                hashMap.get(message.getClass()).call(message.getClass());
+                hashMap.get(message.getClass()).call(message);
             }catch (InterruptedException e){
                 //bla bla bla bla bentayim
             }
@@ -192,6 +191,6 @@ public abstract class MicroService implements Runnable {
 
     	//unregistration
     }
-    protected final <M extends Message> void x(Class<E> type, Callback<E> callback) {}
+
 
 }

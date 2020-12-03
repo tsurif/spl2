@@ -15,8 +15,8 @@ import java.util.Vector;
 public class MessageBusImpl implements MessageBus {
 
 
-	private HashMap<Class<? extends Message>, Pair<Vector<Queue>, Integer>> messageTypeHash;
-	private HashMap<MicroService, Queue> registeredHash;
+	private HashMap<Class<? extends Message>, Queue<Queue<Message>>> messageTypeHash;
+	private HashMap<MicroService, Queue<Message>> registeredHash;
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -32,9 +32,10 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		if(!messageTypeHash.containsKey(type)){
-			messageTypeHash.put(type,new Pair<>(new Vector<Queue>(),0));
+			messageTypeHash.put(type,new LinkedList<>());
 		}
-		if(!messageTypeHash.get(type).getKey().contains(m)) messageTypeHash.get(type).getKey().add(registeredHash.get(m));
+		if(!messageTypeHash.get(type).contains(registeredHash.get(m)))
+			messageTypeHash.get(type).add(registeredHash.get(m));
 		
 	}
 
