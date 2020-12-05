@@ -30,6 +30,7 @@ public class C3POMicroservice extends MicroService {
                 Thread.sleep(event.attack.getDuration());
             }catch (InterruptedException e){}
             Ewoks.getInstance().release(event.attack.getSerials());
+            Diary.getInstance().setTotalAttacks();
             Diary.getInstance().setC3POFinish();
             sendBroadcast(new AccomplishBroadcast());
             //TODO add dairy shit

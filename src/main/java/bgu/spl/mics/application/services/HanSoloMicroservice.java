@@ -33,6 +33,7 @@ public class HanSoloMicroservice extends MicroService {
             } catch (InterruptedException e) {
             }
             Ewoks.getInstance().release(event.attack.getSerials());
+            Diary.getInstance().setTotalAttacks();
             Diary.getInstance().setHanSoloFinish();
             sendBroadcast(new AccomplishBroadcast());
             //TODO add dairy shit

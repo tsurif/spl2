@@ -7,6 +7,8 @@ import bgu.spl.mics.application.services.HanSoloMicroservice;
 import bgu.spl.mics.application.services.LeiaMicroservice;
 import bgu.spl.mics.application.services.R2D2Microservice;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Passive data-object representing a Diary - in which the flow of the battle is recorded.
  * We are going to compare your recordings with the expected recordings, and make sure that your output makes sense.
@@ -24,7 +26,7 @@ public class Diary {
 
     private String recorder;
 
-    private int totalAttacks; //Can be updated by C3PO or HanSolo
+    private AtomicInteger totalAttacks; //Can be updated by C3PO or HanSolo
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -47,6 +49,7 @@ public class Diary {
 
     public void setHanSoloFinish() {
         HanSoloFinish = System.currentTimeMillis();
+        System.out.println("im in HanFinish");
     }
 
     public long getC3POFinish() {
@@ -55,6 +58,7 @@ public class Diary {
 
     public void setC3POFinish() {
         C3POFinish = System.currentTimeMillis();
+        System.out.println("im in C3POFinish");
     }
 
     public long getR2D2Deactivate() {
@@ -63,6 +67,7 @@ public class Diary {
 
     public void setR2D2Deactivate() {
         R2D2Deactivate = System.currentTimeMillis();
+        System.out.println("im in R2D2Deactivate");
     }
 
     public long getLeiaTerminate() {
@@ -71,14 +76,17 @@ public class Diary {
 
     public void setLeiaTerminate() {
         LeiaTerminate = System.currentTimeMillis();
+        System.out.println("im in LeiaTerminate");
     }
 
     public long getHanSoloTerminate() {
         return HanSoloTerminate;
+
     }
 
     public void setHanSoloTerminate() {
         HanSoloTerminate = System.currentTimeMillis();
+        System.out.println("im in HanTerminate");
     }
 
     public long getC3POTerminate() {
@@ -87,6 +95,7 @@ public class Diary {
 
     public void setC3POTerminate() {
         C3POTerminate = System.currentTimeMillis();
+        System.out.println("im in C3POTerminate");
     }
 
     public long getR2D2Terminate() {
@@ -95,6 +104,7 @@ public class Diary {
 
     public void setR2D2Terminate() {
         R2D2Terminate = System.currentTimeMillis();
+        System.out.println("im in R2D2Terminate");
     }
 
     public long getLandoTerminate() {
@@ -103,13 +113,15 @@ public class Diary {
 
     public void setLandoTerminate() {
         LandoTerminate = System.currentTimeMillis();
+        System.out.println("im in LandoTerminate");
     }
 
     public int getTotalAttacks() {
-        return totalAttacks;
+        return totalAttacks.get();
     }
 
-    public void setTotalAttacks(int totalAttacks) {
-        this.totalAttacks = totalAttacks;
+    public void setTotalAttacks() {
+        totalAttacks.getAndAdd(1);
+        System.out.println("totalAttacks value: "+getTotalAttacks());
     }
 }
