@@ -32,7 +32,7 @@ public class HanSoloMicroservice extends MicroService {
             } catch (InterruptedException e) {
             }
             Ewoks.getInstance().release(event.attack.getSerials());
-
+            //sendEvent(acomplishedEvent) to leia
             //TODO add dairy shit
         }
     };

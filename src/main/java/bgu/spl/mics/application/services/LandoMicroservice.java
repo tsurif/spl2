@@ -5,6 +5,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Diary;
+import sun.awt.windows.ThemeReader;
 
 /**
  * LandoMicroservice
@@ -12,12 +13,16 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LandoMicroservice  extends MicroService {
-
+    private long sleepDuration;
     private final Callback<BombDestroyerEvent> bombCallBack= new Callback<BombDestroyerEvent>() {
 
         @Override
         public void call(BombDestroyerEvent c) {
             //TODO: complete this
+            try {
+                Thread.sleep(sleepDuration);
+                sendBroadcast(new TerminateBroadcast());
+            }catch (InterruptedException e){}
         }
     };
 
@@ -31,6 +36,7 @@ public class LandoMicroservice  extends MicroService {
 
     public LandoMicroservice(long duration) {
         super("Lando");
+        sleepDuration = duration;
     }
 
     @Override

@@ -2,7 +2,9 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
@@ -18,6 +20,7 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
+	private int accomplishCount;
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
@@ -26,9 +29,20 @@ public class LeiaMicroservice extends MicroService {
             terminate();
         }
     };
+
+    private final Callback<AccomplishBroadcast> accomplishCallback=new Callback<AccomplishBroadcast>() {
+        @Override
+        public void call(AccomplishBroadcast c) {
+            accomplishCount++;
+            if(accomplishCount == attacks.length) sendEvent(new DeactivationEvent());
+        }
+    };
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 		this.attacks = attacks;
+		accomplishCount = 0;
+
+
     }
 
     @Override
