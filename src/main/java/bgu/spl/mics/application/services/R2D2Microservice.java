@@ -4,6 +4,7 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
+import bgu.spl.mics.application.messages.TerminateEvent;
 
 /**
  * R2D2Microservices is in charge of the handling {@link DeactivationEvent}.
@@ -21,6 +22,13 @@ public class R2D2Microservice extends MicroService {
             //TODO: complete this
         }
     };
+
+    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+        @Override
+        public void call(TerminateEvent c) {
+            terminate();
+        }
+    };
     public R2D2Microservice(long duration) {
         super("R2D2");
     }
@@ -28,5 +36,6 @@ public class R2D2Microservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeEvent(DeactivationEvent.class,deactivateCallBack);
+        subscribeEvent(TerminateEvent.class,terminateCallback);
     }
 }

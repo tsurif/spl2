@@ -4,6 +4,7 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
+import bgu.spl.mics.application.messages.TerminateEvent;
 
 /**
  * LandoMicroservice
@@ -20,6 +21,13 @@ public class LandoMicroservice  extends MicroService {
         }
     };
 
+    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+        @Override
+        public void call(TerminateEvent c) {
+            terminate();
+        }
+    };
+
     public LandoMicroservice(long duration) {
         super("Lando");
     }
@@ -27,5 +35,6 @@ public class LandoMicroservice  extends MicroService {
     @Override
     protected void initialize() {
        subscribeEvent(BombDestroyerEvent.class,bombCallBack);
+       subscribeEvent(TerminateEvent.class,terminateCallback);
     }
 }

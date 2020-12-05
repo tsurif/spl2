@@ -4,6 +4,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.TerminateEvent;
 
 import java.util.Calendar;
 
@@ -25,6 +26,13 @@ public class HanSoloMicroservice extends MicroService {
         }
     };
 
+    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+        @Override
+        public void call(TerminateEvent c) {
+            terminate();
+        }
+    };
+
     public HanSoloMicroservice() {
         super("Han");
     }
@@ -33,6 +41,7 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeEvent(AttackEvent.class,attackCallBack);
+        subscribeEvent(TerminateEvent.class,terminateCallback);
 
     }
 }

@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.TerminateEvent;
 
 
 /**
@@ -22,6 +23,13 @@ public class C3POMicroservice extends MicroService {
             //TODO: complete this
         }
     };
+
+    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+        @Override
+        public void call(TerminateEvent c) {
+            terminate();
+        }
+    };
     public C3POMicroservice() {
         super("C3PO");
     }
@@ -29,6 +37,6 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeEvent(AttackEvent.class,attackCallBack);
-
+        subscribeEvent(TerminateEvent.class,terminateCallback);
     }
 }
