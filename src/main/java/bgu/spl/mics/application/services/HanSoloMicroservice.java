@@ -17,9 +17,10 @@ import java.util.Calendar;
  */
 public class HanSoloMicroservice extends MicroService {
 
-    private Callback<AttackEvent> attackCallBack= new Callback() {
+    private Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
+
         @Override
-        public void call(Object c) {
+        public void call(AttackEvent c) {
             //TODO: complete this
         }
     };

@@ -15,9 +15,10 @@ import bgu.spl.mics.application.messages.AttackEvent;
  */
 public class C3POMicroservice extends MicroService {
 
-    private Callback<AttackEvent> attackCallBack= new Callback() {
+    private Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
+
         @Override
-        public void call(Object c) {
+        public void call(AttackEvent c) {
             //TODO: complete this
         }
     };
@@ -28,5 +29,6 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeEvent(AttackEvent.class,attackCallBack);
+
     }
 }
