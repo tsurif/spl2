@@ -4,6 +4,7 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.TerminateEvent;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 
 /**
@@ -19,8 +20,16 @@ public class C3POMicroservice extends MicroService {
     private Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
 
         @Override
-        public void call(AttackEvent c) {
+        public void call(AttackEvent event) {
             //TODO: complete this
+
+            Ewoks.getInstance().acquire(event.attack.getSerials(),0);
+            try {
+                Thread.sleep(event.attack.getDuration());
+            }catch (InterruptedException e){}
+            Ewoks.getInstance().release(event.attack.getSerials());
+
+            //TODO add dairy shit
         }
     };
 

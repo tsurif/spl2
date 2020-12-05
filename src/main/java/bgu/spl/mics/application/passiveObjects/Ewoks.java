@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.util.List;
+
 /**
  * Passive object representing the resource manager.
  * <p>
@@ -29,11 +31,26 @@ public class Ewoks {
             ewokLockers[i] = new Object();
         }
     }
-    public void acquire(int[] ewoksToUse, int index){//assuming ewoksTouse is sorted
-            synchronized (ewokLockers[ewoksToUse[index]]){
-                ewoksArr[ewoksToUse[index]].acquire();
-                if(index<ewoksToUse.length-1) acquire(ewoksToUse,index + 1);
+    public void acquire(List<Integer> ewoksToUse, int index){//assuming ewoksTouse is sorted
+        for (Integer i:ewoksToUse) {
+            synchronized (ewokLockers[ewoksToUse.get(index)]) {
+                while (!ewoksArr[ewoksToUse.get(index)].available) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {}
+                }
+                ewoksArr[ewoksToUse.get(index)].acquire();
             }
+        }
+    }
+
+    public void release(List<Integer> ewoksToUse){
+        for (Integer i: ewoksToUse){
+            synchronized (ewokLockers[ewoksToUse.get(i)]) {
+            ewoksArr[i].release();
+            ewokLockers[i].notifyAll();
+            }
+        }
     }
 
 
