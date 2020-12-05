@@ -22,6 +22,7 @@ public class Ewoks {
     }
 
     public void initEwoks(int size){
+        size = size + 1;
         ewoksArr = new Ewok[size];
         for (int i = 0; i < size; i = i + 1){
             ewoksArr[i] = new Ewok(i);
@@ -31,23 +32,26 @@ public class Ewoks {
             ewokLockers[i] = new Object();
         }
     }
-    public void acquire(List<Integer> ewoksToUse, int index){//assuming ewoksTouse is sorted
+    public void acquire(List<Integer> ewoksToUse, String name){//assuming ewoksTouse is sorted
+        System.out.println("Ewoks resiving request By" + name);
         for (Integer i:ewoksToUse) {
-            synchronized (ewokLockers[ewoksToUse.get(index)]) {
-                while (!ewoksArr[ewoksToUse.get(index)].available) {
+            synchronized (ewokLockers[i]) {
+                while (!ewoksArr[i].available) {
                     try {
-                        wait();
+                        ewokLockers[i].wait();
                     } catch (InterruptedException e) {}
                 }
-                ewoksArr[ewoksToUse.get(index)].acquire();
+                System.out.println("Ewok num " + i + " calls for duty to " + name );
+                ewoksArr[i].acquire();
             }
         }
     }
 
     public void release(List<Integer> ewoksToUse){
         for (Integer i: ewoksToUse){
-            synchronized (ewokLockers[ewoksToUse.get(i)]) {
+            synchronized (ewokLockers[i]) {
             ewoksArr[i].release();
+                System.out.println("Ewok num " + i + " dismiss" );
             ewokLockers[i].notifyAll();
             }
         }

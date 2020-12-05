@@ -40,6 +40,9 @@ public class LeiaMicroservice extends MicroService {
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 		this.attacks = attacks;
+        for (Attack a: attacks) {
+            a.sort();//TODO change the logic to avoid this methods
+        }
 		accomplishCount = 0;
 
 
@@ -47,12 +50,14 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
+        System.out.println("Leia start initialize");
         try {
             Thread.sleep(1000);
         }catch (InterruptedException e){}
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
         subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack obj:attacks) {
+            System.out.println("Leia send attack");
             sendAttackEvent(obj);
         }
     }

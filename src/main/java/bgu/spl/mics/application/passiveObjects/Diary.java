@@ -19,6 +19,7 @@ public class Diary {
     private static class DiaryHolder{
         private static Diary instance = new Diary();
     }
+
     public static Diary getInstance(){
         return Diary.DiaryHolder.instance;
     }
@@ -39,6 +40,7 @@ public class Diary {
 
     public Diary(){
         //recorder="";
+        totalAttacks = new AtomicInteger();
         }
 
     //public String getRecorder(){return recorder;}

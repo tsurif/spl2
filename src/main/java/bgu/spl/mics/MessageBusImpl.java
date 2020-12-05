@@ -1,11 +1,11 @@
 package bgu.spl.mics;
 
-import javafx.util.Pair;
+
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Vector;
+
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -14,7 +14,7 @@ import java.util.Vector;
  */
 public class MessageBusImpl implements MessageBus {
 
-
+//TODO implement the round robin demand
 	private HashMap<Class<? extends Message>, Queue<Queue<Message>>> messageTypeHash;
 	private HashMap<MicroService, Queue<Message>> registeredHash;
 	private HashMap<Event,Future> futureHashMap;
@@ -104,7 +104,12 @@ public class MessageBusImpl implements MessageBus {
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		//blocking??
 		Queue<Message> msQueue = registeredHash.get(m);
-		while(msQueue.isEmpty()) wait();//TODO: how do we make thread to wait
+
+		while(msQueue.isEmpty()){
+			try {
+				Thread.sleep(10);
+			}catch (InterruptedException e){}
+		} //wait();//TODO: how do we make thread to wait
 		//TODO once the thread starting to take message from the queue blook the other threads from accesing it
 		return msQueue.remove();
 	}
