@@ -2,9 +2,9 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.messages.TerminateEvent;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 /**
  * R2D2Microservices is in charge of the handling {@link DeactivationEvent}.
@@ -15,17 +15,22 @@ import bgu.spl.mics.application.messages.TerminateEvent;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class R2D2Microservice extends MicroService {
-    private Callback<DeactivationEvent> deactivateCallBack= new Callback<DeactivationEvent>() {
+    private final Callback<DeactivationEvent> deactivateCallBack= new Callback<DeactivationEvent>() {
 
         @Override
         public void call(DeactivationEvent c) {
             //TODO: complete this
+            try {
+                Thread.sleep(2000);
+                Diary.getInstance().setR2D2Deactivate();
+            }catch(InterruptedException e){}
         }
     };
 
-    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+    private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
-        public void call(TerminateEvent c) {
+        public void call(TerminateBroadcast c) {
+            Diary.getInstance().setR2D2Terminate();
             terminate();
         }
     };
@@ -36,6 +41,7 @@ public class R2D2Microservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeEvent(DeactivationEvent.class,deactivateCallBack);
-        subscribeEvent(TerminateEvent.class,terminateCallback);
+        subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
     }
+
 }

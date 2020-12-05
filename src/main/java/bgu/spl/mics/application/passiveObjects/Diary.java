@@ -45,7 +45,7 @@ public class Diary {
         return HanSoloFinish;
     }
 
-    public void setHanSoloFinish(HanSoloMicroservice hs) {
+    public void setHanSoloFinish() {
         HanSoloFinish = System.currentTimeMillis();
     }
 
@@ -53,7 +53,7 @@ public class Diary {
         return C3POFinish;
     }
 
-    public void setC3POFinish(C3POMicroservice c3po) {
+    public void setC3POFinish() {
         C3POFinish = System.currentTimeMillis();
     }
 
@@ -61,7 +61,7 @@ public class Diary {
         return R2D2Deactivate;
     }
 
-    public void setR2D2Deactivate(R2D2Microservice r2d2) {
+    public void setR2D2Deactivate() {
         R2D2Deactivate = System.currentTimeMillis();
     }
 

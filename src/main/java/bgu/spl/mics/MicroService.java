@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
