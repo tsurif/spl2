@@ -6,12 +6,12 @@ import java.util.List;
 
 public class AttackEvent implements Event<Boolean> {
 	public boolean expectedResult;
-	public List<Integer> ewoks;
-
-	public AttackEvent(List<Integer> ewoks){
+//	public List<Integer> ewoks;
+	public Attack attack;
+	public AttackEvent(Attack attack){
 	    expectedResult=true;
-	    this.ewoks=ewoks;
-
+//	    this.ewoks=ewoks;
+		this.attack=attack;
     }
 
 }
