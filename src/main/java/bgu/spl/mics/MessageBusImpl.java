@@ -17,7 +17,7 @@ public class MessageBusImpl implements MessageBus {
 
 	private HashMap<Class<? extends Message>, Queue<Queue<Message>>> messageTypeHash;
 	private HashMap<MicroService, Queue<Message>> registeredHash;
-	private HashMap<Event<?>,Future<?>> futureHashMap;
+	private HashMap<Event,Future> futureHashMap;
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -54,7 +54,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void complete(Event<T> e, T result) {
-		
+		futureHashMap.get(e).resolve(result);
 	}
 
 	@Override
@@ -105,6 +105,7 @@ public class MessageBusImpl implements MessageBus {
 		//blocking??
 		Queue<Message> msQueue = registeredHash.get(m);
 		while(msQueue.isEmpty()) wait();//TODO: how do we make thread to wait
+		//TODO once the thread starting to take message from the queue blook the other threads from accesing it
 		return msQueue.remove();
 	}
 
