@@ -20,7 +20,7 @@ public class Attack {
     public Attack(List<Integer> serialNumbers, int duration) {
         this.serials = serialNumbers;
         this.duration = duration;
-        serials.sort((x,y)->x-y);// tsuri: i added this to avoid deadLocks
+        serials.sort((x,y)->x-y);// i added this to avoid deadLocks
 
     }
     public List<Integer>getSerials(){return serials;}

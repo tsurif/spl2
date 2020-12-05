@@ -10,7 +10,9 @@ public class Ewok {
 	int serialNumber;
 	boolean available;
 	//private Object lock;
-  
+    public Ewok (int serialNumber){
+        this.serialNumber = serialNumber;
+    }
     /**
      * Acquires an Ewok
      */
