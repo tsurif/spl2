@@ -44,6 +44,7 @@ public class Main {
 		Thread R2D2T=new Thread(R2D2);
 		Thread LandoT=new Thread(Lando);
 
+		MessageBusImpl.getInstance();
 		LeiaT.start();
 		C3POT.start();
 		HanT.start();

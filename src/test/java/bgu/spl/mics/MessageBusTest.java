@@ -31,7 +31,7 @@ class MessageBusTest {
         ms1=new MicroServiceMock("Test1");
         ms2=new MicroServiceMock("Test2");
 
-        attackEvent = new AttackEvent();
+        attackEvent = new AttackEvent(new Attack(null,50));
         broadCast = new BroadCastMock();
     }
 
