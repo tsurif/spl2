@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
@@ -32,8 +33,10 @@ public class HanSoloMicroservice extends MicroService {
             } catch (InterruptedException e) {
             }
             Ewoks.getInstance().release(event.attack.getSerials());
-            //sendEvent(acomplishedEvent) to leia
+            Diary.getInstance().setHanSoloFinish();
+            sendBroadcast(new AccomplishBroadcast());
             //TODO add dairy shit
+
         }
     };
 

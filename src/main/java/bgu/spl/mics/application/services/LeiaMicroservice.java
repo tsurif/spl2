@@ -48,6 +48,7 @@ public class LeiaMicroservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
+        subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack obj:attacks) {
             sendAttackEvent(obj);
         }

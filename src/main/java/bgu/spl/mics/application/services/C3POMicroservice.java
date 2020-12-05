@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
@@ -29,10 +30,11 @@ public class C3POMicroservice extends MicroService {
                 Thread.sleep(event.attack.getDuration());
             }catch (InterruptedException e){}
             Ewoks.getInstance().release(event.attack.getSerials());
-
+            Diary.getInstance().setC3POFinish();
+            sendBroadcast(new AccomplishBroadcast());
             //TODO add dairy shit
             //Sometime
-            Diary.getInstance().setC3POFinish();
+
 
         }
     };
