@@ -8,5 +8,10 @@ package bgu.spl.mics.application.passiveObjects;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
+    private String recorder;
+
+    public Diary(){recorder="";}
+    public String getRecorder(){return recorder;}
+    public void setRecorder(String record){recorder=recorder+record+"\n";}
 
 }

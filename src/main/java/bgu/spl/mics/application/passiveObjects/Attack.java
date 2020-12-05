@@ -23,4 +23,6 @@ public class Attack {
         serials.sort((x,y)->x-y);// tsuri: i added this to avoid deadLocks
 
     }
+    public List<Integer>getSerials(){return serials;}
+    public int getDuration(){return duration;}
 }
