@@ -2,6 +2,10 @@ package bgu.spl.mics.application.passiveObjects;
 
 
 import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.application.services.C3POMicroservice;
+import bgu.spl.mics.application.services.HanSoloMicroservice;
+import bgu.spl.mics.application.services.LeiaMicroservice;
+import bgu.spl.mics.application.services.R2D2Microservice;
 
 /**
  * Passive data-object representing a Diary - in which the flow of the battle is recorded.
@@ -20,7 +24,7 @@ public class Diary {
 
     private String recorder;
 
-    private int totalAttacks;
+    private int totalAttacks; //Can be updated by C3PO or HanSolo
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -41,7 +45,7 @@ public class Diary {
         return HanSoloFinish;
     }
 
-    public void setHanSoloFinish() {
+    public void setHanSoloFinish(HanSoloMicroservice hs) {
         HanSoloFinish = System.currentTimeMillis();
     }
 
@@ -49,7 +53,7 @@ public class Diary {
         return C3POFinish;
     }
 
-    public void setC3POFinish() {
+    public void setC3POFinish(C3POMicroservice c3po) {
         C3POFinish = System.currentTimeMillis();
     }
 
@@ -57,7 +61,7 @@ public class Diary {
         return R2D2Deactivate;
     }
 
-    public void setR2D2Deactivate() {
+    public void setR2D2Deactivate(R2D2Microservice r2d2) {
         R2D2Deactivate = System.currentTimeMillis();
     }
 
