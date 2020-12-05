@@ -9,7 +9,7 @@ package bgu.spl.mics.application.passiveObjects;
 public class Ewok {
 	int serialNumber;
 	boolean available;
-	
+	//private Object lock;
   
     /**
      * Acquires an Ewok

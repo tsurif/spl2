@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -19,6 +20,8 @@ public class Attack {
     public Attack(List<Integer> serialNumbers, int duration) {
         this.serials = serialNumbers;
         this.duration = duration;
+        serials.sort((x,y)->x-y);// tsuri: i added this to avoid deadLocks
+
     }
     public List<Integer>getSerials(){return serials;}
     public int getDuration(){return duration;}
