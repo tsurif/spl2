@@ -4,9 +4,8 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.TerminateEvent;
-
-import java.util.Calendar;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 /**
  * HanSoloMicroservices is in charge of the handling {@link AttackEvent}.
@@ -18,17 +17,20 @@ import java.util.Calendar;
  */
 public class HanSoloMicroservice extends MicroService {
 
-    private Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
+    private final Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
 
         @Override
         public void call(AttackEvent c) {
             //TODO: complete this
+            //Sometime
+            Diary.getInstance().getHanSoloFinish();
         }
     };
 
-    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+    private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
-        public void call(TerminateEvent c) {
+        public void call(TerminateBroadcast c) {
+            Diary.getInstance().setHanSoloTerminate();
             terminate();
         }
     };
@@ -41,7 +43,7 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         subscribeEvent(AttackEvent.class,attackCallBack);
-        subscribeEvent(TerminateEvent.class,terminateCallback);
+        subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
 
     }
 }

@@ -1,13 +1,11 @@
 package bgu.spl.mics.application.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.TerminateEvent;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 /**
  * LeiaMicroservices Initialized with Attack objects, and sends them as  {@link AttackEvent}.
@@ -18,13 +16,13 @@ import bgu.spl.mics.application.passiveObjects.Attack;
  * You MAY change constructor signatures and even add new public constructors.
  */
 
-//TODO we changed Attack to AttackEvent class!!!!!!!
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
 
-    private Callback<TerminateEvent> terminateCallback=new Callback<TerminateEvent>() {
+    private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
-        public void call(TerminateEvent c) {
+        public void call(TerminateBroadcast c) {
+            Diary.getInstance().setLeiaTerminate();
             terminate();
         }
     };
@@ -35,7 +33,7 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        subscribeEvent(TerminateEvent.class,terminateCallback);
+        subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
         for (Attack obj:attacks) {
             sendAttackEvent(obj);
         }
