@@ -47,6 +47,9 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
+        try {
+            Thread.sleep(1000);
+        }catch (InterruptedException e){}
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
         subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack obj:attacks) {
