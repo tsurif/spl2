@@ -5,6 +5,7 @@ import java.util.List;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.passiveObjects.Attack;
 
 /**
  * LeiaMicroservices Initialized with Attack objects, and sends them as  {@link AttackEvent}.
@@ -17,15 +18,22 @@ import bgu.spl.mics.application.messages.AttackEvent;
 
 //TODO we changed Attack to AttackEvent class!!!!!!!
 public class LeiaMicroservice extends MicroService {
-	private AttackEvent[] attacks;
+	private Attack[] attacks;
 	
-    public LeiaMicroservice(AttackEvent[] attacks) {
+    public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 		this.attacks = attacks;
     }
 
     @Override
     protected void initialize() {
-    	
+        for (Attack obj:attacks) {
+            sendAttackEvent(obj);
+        }
+    }
+
+    public void sendAttackEvent(Attack attack){
+        AttackEvent ae=new AttackEvent(attack);
+        sendEvent(ae);
     }
 }
