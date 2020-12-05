@@ -50,7 +50,7 @@ public class HanSoloMicroservice extends MicroService {
     };
 
     public HanSoloMicroservice() {
-        super("Han");
+        super("Han");//TODO is this the right name?
     }
 
 

@@ -35,9 +35,11 @@ public class Diary {
     private long LandoTerminate;
 
 
-    public Diary(){recorder="";}
+    public Diary(){
+        //recorder="";
+        }
 
-    public String getRecorder(){return recorder;}
+    //public String getRecorder(){return recorder;}
 
     public void setRecorder(String record){recorder=recorder+record+"\n";}
 
