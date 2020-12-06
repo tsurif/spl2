@@ -2,8 +2,6 @@ package bgu.spl.mics;
 
 
 
-import bgu.spl.mics.application.messages.AttackEvent;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -51,14 +49,6 @@ public class MessageBusImpl implements MessageBus {
 		}
 //			System.out.println(m.name + " add himself");
 			messageTypeHash.get(type).add(registeredHash.get(m));
-//			if (type.toString().contains("Attack")) {
-//
-//				System.out.println("Attack queue:");
-//				for (Queue<Message> q:
-//						messageTypeHash.get(type)) {
-//					System.out.println(q);
-//				}
-//			}
 	}
 
 	@Override
@@ -67,9 +57,9 @@ public class MessageBusImpl implements MessageBus {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-			messageTypeHash.get(type).add(registeredHash.get(m));
+//			messageTypeHash.get(type).add(registeredHash.get(m));
 		}
-			//messageTypeHash.get(type).add(registeredHash.get(m));//TODO is it gonig in to the sync?
+			messageTypeHash.get(type).add(registeredHash.get(m));//TODO is it gonig in to the sync?
 	}
 
 
@@ -92,12 +82,15 @@ public class MessageBusImpl implements MessageBus {
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		if(!messageTypeHash.containsKey(e.getClass())|| messageTypeHash.get(e.getClass()).size()==0)
-        return null;
-		Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
-		BlockingQueue<Message> msQueue = subscribersQueue.remove();
-		subscribersQueue.add(msQueue);
-		msQueue.add(e);
+		if(!messageTypeHash.containsKey(e.getClass())||
+				messageTypeHash.get(e.getClass()).size()==0)
+        	return null;
+		synchronized (messageTypeHashLocker) {
+			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
+			BlockingQueue<Message> msQueue = subscribersQueue.remove();
+			subscribersQueue.add(msQueue);
+			msQueue.add(e);
+		}
 		Future<T> future = new Future<>();
 		futureHashMap.put(e,future);
 		return future;
@@ -113,7 +106,11 @@ public class MessageBusImpl implements MessageBus {
 	public void unregister(MicroService m) {
 		if(registeredHash.containsKey(m)) {
 			BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
-			messageTypeHash.forEach((k, v) -> v.removeIf(q->q.equals(mQueueRemoved)));
+			synchronized (messageTypeHashLocker) {
+				messageTypeHash.forEach((k, v) -> {
+					v.removeIf(q -> q == mQueueRemoved);
+				});
+			}
 		}
 
 	}
@@ -123,13 +120,7 @@ public class MessageBusImpl implements MessageBus {
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		//blocking??
 		BlockingQueue<Message> msQueue = registeredHash.get(m);
-//		while(msQueue.isEmpty()){
-//			try {
-////				Thread.sleep(1);
-//				wait();
-//			}catch (InterruptedException e){}
-//		} //wait();//TODO: how do we make thread to wait
-		//TODO once the thread starting to take message from the queue blook the other threads from accesing it
+
 		return msQueue.take();
 	}
 
