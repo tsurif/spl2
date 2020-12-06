@@ -6,7 +6,19 @@
     },
     {
       "duration" : 1000,
+      "serials" : [5,1,4]
+    },
+    {
+      "duration" : 1000,
+      "serials" : [1]
+    },
+    {
+      "duration" : 1000,
       "serials" : [2,1,5]
+    },
+    {
+      "duration" : 1000,
+      "serials" : [2,5]
     }
   ],
   

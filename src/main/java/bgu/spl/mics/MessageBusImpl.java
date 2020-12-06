@@ -2,6 +2,8 @@ package bgu.spl.mics;
 
 
 
+import bgu.spl.mics.application.messages.AttackEvent;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -41,16 +43,18 @@ public class MessageBusImpl implements MessageBus {
 		synchronized (messageTypeHashLocker) {//this is lock all the messageTypeHash maybe we can lock only the hash for the tyoe we use now
 			System.out.println(m.name +" in sub event");
 			if (!messageTypeHash.containsKey(type)) {
+				System.out.println(m.name + " add queue");
 				messageTypeHash.put(type, new LinkedList<>());
 			}
+			System.out.println(m.name + " add himself");
+			messageTypeHash.get(type).add(registeredHash.get(m));
+			if (type.toString().contains("Attack")) {
 
-			if (!messageTypeHash.get(type).contains(registeredHash.get(m))) {
-				messageTypeHash.get(type).add(registeredHash.get(m));
-			}
-			System.out.println(type +" queue:");
-			for (Queue<Message> q:
-					messageTypeHash.get(type)) {
-				System.out.println(q);
+				System.out.println("Attack queue:");
+				for (Queue<Message> q:
+						messageTypeHash.get(type)) {
+					System.out.println(q);
+				}
 			}
 		}
 
@@ -58,12 +62,13 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		if(!messageTypeHash.containsKey(type))
-			messageTypeHash.put(type,new LinkedList<>());
+		synchronized (messageTypeHashLocker) {
+			if (!messageTypeHash.containsKey(type)) {
+				messageTypeHash.put(type, new LinkedList<>());
+			}
 
-		if(!messageTypeHash.get(type).contains(registeredHash.get(m)))
 			messageTypeHash.get(type).add(registeredHash.get(m));
-
+		}
 	}
 
 	@Override
