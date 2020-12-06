@@ -42,7 +42,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {//TODO allow to work on this together IF the thread not working on the same type
-		synchronized (messageTypeHashLocker) {//this is lock all the messageTypeHash maybe we can lock only the hash for the tyoe we use now
+		synchronized (messageTypeHashLocker) {//this is lock all the messageTypeHash maybe we can lock only the hash for the queue we use now
 //			System.out.println(m.name +" in sub event");
 			if (!messageTypeHash.containsKey(type)) {
 //				System.out.println(m.name + " add queue");
@@ -58,6 +58,7 @@ public class MessageBusImpl implements MessageBus {
 //					System.out.println(q);
 //				}
 //			}
+			//messageTypeHashLocker.notifyAll();
 		}
 
 	}
@@ -69,6 +70,7 @@ public class MessageBusImpl implements MessageBus {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
 			messageTypeHash.get(type).add(registeredHash.get(m));
+			//messageTypeHashLocker.notifyAll();
 		}
 	}
 
@@ -80,10 +82,10 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void sendBroadcast(Broadcast b) {
 		if(!messageTypeHash.containsKey(b.getClass())){
-			//throw error - no one subscribe to this broadcast
+			throw new IllegalArgumentException("No one subscribed to this event"); //throw error - no one subscribe to this broadcast
 		}
 		Queue<BlockingQueue<Message>> subscribersQueue=messageTypeHash.get(b.getClass());
-		for (Queue<Message> elem:subscribersQueue) {
+		for (BlockingQueue<Message> elem:subscribersQueue) {
 			elem.add(b);
 		}
 	}

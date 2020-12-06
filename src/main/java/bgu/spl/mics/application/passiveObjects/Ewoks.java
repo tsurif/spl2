@@ -35,10 +35,10 @@ public class Ewoks {
     public void acquire(List<Integer> ewoksToUse, String name){//assuming ewoksTouse is sorted
         System.out.println("Ewoks resiving request By" + name);
         for (Integer i:ewoksToUse) {
-            synchronized (ewokLockers[i]) {
+            synchronized (ewoksArr[i].lock/*ewokLockers[i]*/) {
                 while (!ewoksArr[i].available) {
                     try {
-                        ewokLockers[i].wait();
+                        ewoksArr[i].lock.wait();//ewokLockers[i].wait();
                     } catch (InterruptedException e) {}
                 }
                 System.out.println("Ewok num " + i + " calls for duty to " + name );
@@ -49,10 +49,10 @@ public class Ewoks {
 
     public void release(List<Integer> ewoksToUse){
         for (Integer i: ewoksToUse){
-            synchronized (ewokLockers[i]) {
+            synchronized (ewoksArr[i].lock/*ewokLockers[i]*/) {
             ewoksArr[i].release();
                 System.out.println("Ewok num " + i + " dismiss" );
-            ewokLockers[i].notifyAll();
+            ewoksArr[i].lock.notifyAll();//ewokLockers[i].notifyAll();
             }
         }
     }

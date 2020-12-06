@@ -29,7 +29,6 @@ public abstract class MicroService implements Runnable {
     private boolean isRegistered;
     private boolean isTerminated;
     private HashMap<Class<? extends Message>, Callback> hashMap;
-//    private HashMap<Class<? extends Message>, Object> ;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -39,7 +38,6 @@ public abstract class MicroService implements Runnable {
     	this.name = name;
     	isRegistered=false;
     	isTerminated=false;
-
     	hashMap = new HashMap<>();
     }
 
