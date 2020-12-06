@@ -41,6 +41,7 @@ public class LandoMicroservice  extends MicroService {
 
     @Override
     protected void initialize() {
+       //System.out.println("Lando start initialize");
        subscribeEvent(BombDestroyerEvent.class,bombCallBack);
        subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
     }

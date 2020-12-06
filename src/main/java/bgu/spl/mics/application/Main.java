@@ -4,6 +4,7 @@ import bgu.spl.mics.Input;
 import bgu.spl.mics.MessageBus;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewok;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.services.*;
@@ -37,7 +38,6 @@ public class Main {
 		MicroService R2D2=new R2D2Microservice(input.getR2D2());
 		MicroService Lando=new LandoMicroservice(input.getLando());
 		Ewoks.getInstance().initEwoks(input.getEwoks());
-
 		Thread LeiaT=new Thread(Leia);
 		Thread C3POT=new Thread(C3PO);
 		Thread HanT=new Thread(Han);
@@ -45,12 +45,30 @@ public class Main {
 		Thread LandoT=new Thread(Lando);
 
 		MessageBusImpl.getInstance();
-		LeiaT.start();
 		C3POT.start();
 		HanT.start();
+
+
 		R2D2T.start();
+
+		try {
+			Thread.sleep(1000);
+		}catch (InterruptedException e){}
+		LeiaT.start();
+
+		try {
+			Thread.sleep(100);
+		}catch (InterruptedException e){}
+
+
 		LandoT.start();
 
+		try {
+			Thread.sleep(1000);
+		}catch (InterruptedException e){}
 
+		Diary d = Diary.getInstance();
+		int i;
+		i = 1;
 	}
 }

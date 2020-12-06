@@ -11,6 +11,7 @@ public class Ewok {
 	boolean available;
 	//private Object lock;
     public Ewok (int serialNumber){
+        available = true;
         this.serialNumber = serialNumber;
     }
     /**

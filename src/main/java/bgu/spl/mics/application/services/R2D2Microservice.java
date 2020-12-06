@@ -44,6 +44,7 @@ public class R2D2Microservice extends MicroService {
 
     @Override
     protected void initialize() {
+        //System.out.println("R2D2 start initialize");
         subscribeEvent(DeactivationEvent.class,deactivateCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
     }
