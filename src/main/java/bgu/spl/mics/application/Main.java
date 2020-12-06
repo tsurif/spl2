@@ -51,21 +51,11 @@ public class Main {
 
 		R2D2T.start();
 
-		try {
-			Thread.sleep(1000);
-		}catch (InterruptedException e){}
+
 		LeiaT.start();
-
-		try {
-			Thread.sleep(100);
-		}catch (InterruptedException e){}
-
 
 		LandoT.start();
 
-		try {
-			Thread.sleep(1000);
-		}catch (InterruptedException e){}
 
 		Diary d = Diary.getInstance();
 		int i;
