@@ -48,6 +48,7 @@ public class MessageBusImpl implements MessageBus {
 //				System.out.println(m.name + " add queue");
 				messageTypeHash.put(type, new LinkedList<>());
 			}
+		}
 //			System.out.println(m.name + " add himself");
 			messageTypeHash.get(type).add(registeredHash.get(m));
 //			if (type.toString().contains("Attack")) {
@@ -58,9 +59,6 @@ public class MessageBusImpl implements MessageBus {
 //					System.out.println(q);
 //				}
 //			}
-			//messageTypeHashLocker.notifyAll();
-		}
-
 	}
 
 	@Override
@@ -70,9 +68,10 @@ public class MessageBusImpl implements MessageBus {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
 			messageTypeHash.get(type).add(registeredHash.get(m));
-			//messageTypeHashLocker.notifyAll();
 		}
+			//messageTypeHash.get(type).add(registeredHash.get(m));//TODO is it gonig in to the sync?
 	}
+
 
 	@Override
 	public <T> void complete(Event<T> e, T result) {
@@ -95,30 +94,14 @@ public class MessageBusImpl implements MessageBus {
 	public <T> Future<T> sendEvent(Event<T> e) {
 		if(!messageTypeHash.containsKey(e.getClass())|| messageTypeHash.get(e.getClass()).size()==0)
         return null;
-
 		Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
-//		System.out.println("-------------------------------------------------------------------");
-//		System.out.println("pre");
-//		for (Queue<Message> q:
-//			 subscribersQueue) {
-//			System.out.println(q);
-//		}
-
 		BlockingQueue<Message> msQueue = subscribersQueue.remove();
-		msQueue.add(e);
 		subscribersQueue.add(msQueue);
-//		System.out.println("post");
-//		for (Queue<Message> q:
-//				subscribersQueue) {
-//			System.out.println(q);
-//		}
-
-
+		msQueue.add(e);
 		Future<T> future = new Future<>();
 		futureHashMap.put(e,future);
-
-
 		return future;
+		//TODO who using this future for the love of god
 	}
 
 	@Override
@@ -140,7 +123,6 @@ public class MessageBusImpl implements MessageBus {
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		//blocking??
 		BlockingQueue<Message> msQueue = registeredHash.get(m);
-
 //		while(msQueue.isEmpty()){
 //			try {
 ////				Thread.sleep(1);

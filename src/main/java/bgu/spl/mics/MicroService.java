@@ -181,6 +181,7 @@ public abstract class MicroService implements Runnable {
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
                 System.out.println(name+" recive massege");
+                //for(int i = 0; i < 10000; i++) {i++;}
                 Callback callback = hashMap.get(message.getClass());
                 callback.call(message);
             }catch (InterruptedException e){

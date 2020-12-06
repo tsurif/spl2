@@ -29,7 +29,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		assert input != null;
-		MicroService Leia=new LeiaMicroservice(input.getAttacks(),"leia1");
+		MicroService Leia=new LeiaMicroservice(input.getAttacks());
 //        Attack[] att = new Attack[input.getAttacks().length];
 //        for (int i = 0 ; i < att.length; i ++){
 //            List<Integer> l = new LinkedList<Integer>();

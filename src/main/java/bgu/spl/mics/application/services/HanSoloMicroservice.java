@@ -60,7 +60,9 @@ public class HanSoloMicroservice extends MicroService {
         System.out.println("Han start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
-
+//        try{
+//            Thread.sleep(5000);
+//        }catch (InterruptedException e){}
         System.out.println("Han end initialize");
     }
 }
