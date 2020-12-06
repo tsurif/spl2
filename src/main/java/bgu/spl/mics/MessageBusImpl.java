@@ -42,23 +42,13 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {//TODO allow to work on this together IF the thread not working on the same type
-		synchronized (messageTypeHashLocker) {//this is lock all the messageTypeHash maybe we can lock only the hash for the queue we use now
-//			System.out.println(m.name +" in sub event");
+		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(type)) {
-//				System.out.println(m.name + " add queue");
 				messageTypeHash.put(type, new LinkedList<>());
 			}
 		}
-//			System.out.println(m.name + " add himself");
 			messageTypeHash.get(type).add(registeredHash.get(m));
-//			if (type.toString().contains("Attack")) {
-//
-//				System.out.println("Attack queue:");
-//				for (Queue<Message> q:
-//						messageTypeHash.get(type)) {
-//					System.out.println(q);
-//				}
-//			}
+
 	}
 
 	@Override
@@ -67,9 +57,9 @@ public class MessageBusImpl implements MessageBus {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-			messageTypeHash.get(type).add(registeredHash.get(m));
+			//messageTypeHash.get(type).add(registeredHash.get(m));
 		}
-			//messageTypeHash.get(type).add(registeredHash.get(m));//TODO is it gonig in to the sync?
+			messageTypeHash.get(type).add(registeredHash.get(m));
 	}
 
 
@@ -106,14 +96,16 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
+		System.out.println(m.name + " is register");
 		registeredHash.put(m,new LinkedBlockingQueue<>());//TODO ??change that to something thread - safety???
+		System.out.println(m.name + " done register");
 	}
 
 	@Override
 	public void unregister(MicroService m) {
 		if(registeredHash.containsKey(m)) {
 			BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
-			messageTypeHash.forEach((k, v) -> v.removeIf(q->q.equals(mQueueRemoved)));
+			messageTypeHash.forEach((type_Key, QOfBlockingQ) -> QOfBlockingQ.removeIf(q->q.equals(mQueueRemoved)));
 		}
 
 	}
@@ -121,15 +113,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		//blocking??
 		BlockingQueue<Message> msQueue = registeredHash.get(m);
-//		while(msQueue.isEmpty()){
-//			try {
-////				Thread.sleep(1);
-//				wait();
-//			}catch (InterruptedException e){}
-//		} //wait();//TODO: how do we make thread to wait
-		//TODO once the thread starting to take message from the queue blook the other threads from accesing it
 		return msQueue.take();
 	}
 
