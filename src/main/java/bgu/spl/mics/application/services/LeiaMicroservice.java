@@ -37,8 +37,9 @@ public class LeiaMicroservice extends MicroService {
             if(accomplishCount == attacks.length) sendEvent(new DeactivationEvent());
         }
     };
-    public LeiaMicroservice(Attack[] attacks) {
-        super("Leia");
+    public LeiaMicroservice(Attack[] attacks, String name) {//TODO delete the name argument
+        //super("Leia");
+        super(name);
 		this.attacks = attacks;
         for (Attack a: attacks) {
             a.sort();//TODO change the logic to avoid this methods
@@ -50,14 +51,14 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        //System.out.println("Leia start initialize");
+        System.out.println("Leia start initialize");
         try {
             Thread.sleep(1000);
         }catch (InterruptedException e){}
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
         subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack att:attacks) {
-            System.out.println("Leia send attack" + att.toString().substring(att.toString().length()-10,att.toString().length()-1));
+            System.out.println(name + " send attack" + att.toString().substring(att.toString().length()-10,att.toString().length()-1));
             sendAttackEvent(att);
         }
     }

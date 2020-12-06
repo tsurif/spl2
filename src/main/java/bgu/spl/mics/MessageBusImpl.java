@@ -7,6 +7,8 @@ import bgu.spl.mics.application.messages.AttackEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
@@ -17,8 +19,8 @@ import java.util.Queue;
 public class MessageBusImpl implements MessageBus {
 
 //TODO implement the round robin demand
-	private HashMap<Class<? extends Message>, Queue<Queue<Message>>> messageTypeHash;
-	private HashMap<MicroService, Queue<Message>> registeredHash;
+	private HashMap<Class<? extends Message>, Queue<BlockingQueue<Message>>> messageTypeHash;
+	private HashMap<MicroService, BlockingQueue<Message>> registeredHash;
 	private HashMap<Event,Future> futureHashMap;
 
 	private final Object messageTypeHashLocker;
@@ -41,21 +43,21 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {//TODO allow to work on this together IF the thread not working on the same type
 		synchronized (messageTypeHashLocker) {//this is lock all the messageTypeHash maybe we can lock only the hash for the tyoe we use now
-			System.out.println(m.name +" in sub event");
+//			System.out.println(m.name +" in sub event");
 			if (!messageTypeHash.containsKey(type)) {
-				System.out.println(m.name + " add queue");
+//				System.out.println(m.name + " add queue");
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-			System.out.println(m.name + " add himself");
+//			System.out.println(m.name + " add himself");
 			messageTypeHash.get(type).add(registeredHash.get(m));
-			if (type.toString().contains("Attack")) {
-
-				System.out.println("Attack queue:");
-				for (Queue<Message> q:
-						messageTypeHash.get(type)) {
-					System.out.println(q);
-				}
-			}
+//			if (type.toString().contains("Attack")) {
+//
+//				System.out.println("Attack queue:");
+//				for (Queue<Message> q:
+//						messageTypeHash.get(type)) {
+//					System.out.println(q);
+//				}
+//			}
 		}
 
 	}
@@ -66,7 +68,6 @@ public class MessageBusImpl implements MessageBus {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-
 			messageTypeHash.get(type).add(registeredHash.get(m));
 		}
 	}
@@ -81,7 +82,7 @@ public class MessageBusImpl implements MessageBus {
 		if(!messageTypeHash.containsKey(b.getClass())){
 			//throw error - no one subscribe to this broadcast
 		}
-		Queue<Queue<Message>> subscribersQueue=messageTypeHash.get(b.getClass());
+		Queue<BlockingQueue<Message>> subscribersQueue=messageTypeHash.get(b.getClass());
 		for (Queue<Message> elem:subscribersQueue) {
 			elem.add(b);
 		}
@@ -93,7 +94,7 @@ public class MessageBusImpl implements MessageBus {
 		if(!messageTypeHash.containsKey(e.getClass()))
         return null;
 
-		Queue<Queue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
+		Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
 //		System.out.println("-------------------------------------------------------------------");
 //		System.out.println("pre");
 //		for (Queue<Message> q:
@@ -101,7 +102,7 @@ public class MessageBusImpl implements MessageBus {
 //			System.out.println(q);
 //		}
 
-		Queue<Message> msQueue = subscribersQueue.remove();
+		BlockingQueue<Message> msQueue = subscribersQueue.remove();
 		msQueue.add(e);
 		subscribersQueue.add(msQueue);
 //		System.out.println("post");
@@ -114,12 +115,13 @@ public class MessageBusImpl implements MessageBus {
 		Future<T> future = new Future<>();
 		futureHashMap.put(e,future);
 
+
 		return future;
 	}
 
 	@Override
 	public void register(MicroService m) {
-		registeredHash.put(m,new LinkedList<Message>());//TODO ??change that to something thread - safety???
+		registeredHash.put(m,new LinkedBlockingQueue<>());//TODO ??change that to something thread - safety???
 	}
 
 	@Override
@@ -135,15 +137,16 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		//blocking??
-		Queue<Message> msQueue = registeredHash.get(m);
+		BlockingQueue<Message> msQueue = registeredHash.get(m);
 
-		while(msQueue.isEmpty()){
-			try {
-				Thread.sleep(10);
-			}catch (InterruptedException e){}
-		} //wait();//TODO: how do we make thread to wait
+//		while(msQueue.isEmpty()){
+//			try {
+////				Thread.sleep(1);
+//				wait();
+//			}catch (InterruptedException e){}
+//		} //wait();//TODO: how do we make thread to wait
 		//TODO once the thread starting to take message from the queue blook the other threads from accesing it
-		return msQueue.remove();
+		return msQueue.take();
 	}
 
 //	public void restart(){
