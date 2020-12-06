@@ -48,7 +48,7 @@ public class Main {
 		Thread HanT=new Thread(Han);
 		Thread R2D2T=new Thread(R2D2);
 		Thread LandoT=new Thread(Lando);
-		//MessageBusImpl.getInstance();
+		MessageBus forIdanTests= MessageBusImpl.getInstance();
 
 		C3POT.start();
 		HanT.start();
@@ -76,5 +76,6 @@ public class Main {
 			e.printStackTrace();
 		}
 
+		int stop=0;
 	}
 }

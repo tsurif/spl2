@@ -93,7 +93,7 @@ public class MessageBusImpl implements MessageBus {
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		if(!messageTypeHash.containsKey(e.getClass()))
+		if(!messageTypeHash.containsKey(e.getClass())|| messageTypeHash.get(e.getClass()).size()==0)
         return null;
 
 		Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
@@ -128,9 +128,9 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void unregister(MicroService m) {
-		if(registeredHash.containsValue(m)) {
-			Queue<Message> mQueueRemoved = registeredHash.remove(m);
-			messageTypeHash.forEach((k, v) -> v.removeIf(q -> q.equals(mQueueRemoved)));
+		if(registeredHash.containsKey(m)) {
+			BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
+			messageTypeHash.forEach((k, v) -> v.removeIf(q->q.equals(mQueueRemoved)));
 		}
 
 	}
