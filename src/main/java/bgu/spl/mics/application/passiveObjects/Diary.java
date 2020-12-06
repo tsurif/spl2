@@ -24,9 +24,6 @@ public class Diary {
         return Diary.DiaryHolder.instance;
     }
 
-
-    private String recorder;
-
     private AtomicInteger totalAttacks; //Can be updated by C3PO or HanSolo
     private long HanSoloFinish;
     private long C3POFinish;
@@ -39,13 +36,8 @@ public class Diary {
 
 
     public Diary(){
-        //recorder="";
         totalAttacks = new AtomicInteger();
         }
-
-    //public String getRecorder(){return recorder;}
-
-    public void setRecorder(String record){recorder=recorder+record+"\n";}
 
     public long getHanSoloFinish() {
         return HanSoloFinish;
