@@ -2,8 +2,6 @@ package bgu.spl.mics;
 
 
 
-import bgu.spl.mics.application.messages.AttackEvent;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -48,7 +46,6 @@ public class MessageBusImpl implements MessageBus {
 			}
 		}
 			messageTypeHash.get(type).add(registeredHash.get(m));
-
 	}
 
 	@Override
@@ -57,7 +54,6 @@ public class MessageBusImpl implements MessageBus {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-			//messageTypeHash.get(type).add(registeredHash.get(m));
 		}
 			messageTypeHash.get(type).add(registeredHash.get(m));
 	}
@@ -82,12 +78,15 @@ public class MessageBusImpl implements MessageBus {
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		if(!messageTypeHash.containsKey(e.getClass())|| messageTypeHash.get(e.getClass()).size()==0)
-        return null;
-		Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
-		BlockingQueue<Message> msQueue = subscribersQueue.remove();
-		subscribersQueue.add(msQueue);
-		msQueue.add(e);
+		if(!messageTypeHash.containsKey(e.getClass())||
+				messageTypeHash.get(e.getClass()).size()==0)
+        	return null;
+		synchronized (messageTypeHashLocker) {
+			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
+			BlockingQueue<Message> msQueue = subscribersQueue.remove();
+			subscribersQueue.add(msQueue);
+			msQueue.add(e);
+		}
 		Future<T> future = new Future<>();
 		futureHashMap.put(e,future);
 		return future;
@@ -105,7 +104,12 @@ public class MessageBusImpl implements MessageBus {
 	public void unregister(MicroService m) {
 		if(registeredHash.containsKey(m)) {
 			BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
-			messageTypeHash.forEach((type_Key, QOfBlockingQ) -> QOfBlockingQ.removeIf(q->q.equals(mQueueRemoved)));
+
+			synchronized (messageTypeHashLocker) {
+				messageTypeHash.forEach((k, v) -> {
+					v.removeIf(q -> q == mQueueRemoved);
+				});
+			}
 		}
 
 	}
