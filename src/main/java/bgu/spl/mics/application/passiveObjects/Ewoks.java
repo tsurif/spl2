@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Ewoks {
     Ewok[] ewoksArr;
-    Object[] ewokLockers;
+    private final Object ewokLocker = new Object();
     private static class EwoksHolder{
         private static Ewoks instance = new Ewoks();
     }
@@ -27,32 +27,30 @@ public class Ewoks {
         for (int i = 0; i < size; i = i + 1){
             ewoksArr[i] = new Ewok(i);
         }
-        ewokLockers = new Object[size];
-        for (int i = 0; i < size; i = i + 1){
-            ewokLockers[i] = new Object();
-        }
     }
     public void acquire(List<Integer> ewoksToUse, String name){//assuming ewoksTouse is sorted
         System.out.println("Ewoks resiving request By" + name);
         for (Integer i:ewoksToUse) {
-            synchronized (ewokLockers[i]) {
+            synchronized (ewokLocker) {
                 while (!ewoksArr[i].available) {
                     try {
-                        ewokLockers[i].wait();
-                    } catch (InterruptedException e) {}
+                        ewokLocker.wait();
+                    } catch (InterruptedException e) {
+                    }
                 }
+            }
                 System.out.println("Ewok num " + i + " calls for duty to " + name );
                 ewoksArr[i].acquire();
             }
-        }
+        //}
     }
 
     public void release(List<Integer> ewoksToUse){
         for (Integer i: ewoksToUse){
-            synchronized (ewokLockers[i]) {
+            synchronized (ewokLocker) {
             ewoksArr[i].release();
                 System.out.println("Ewok num " + i + " dismiss" );
-            ewokLockers[i].notifyAll();
+            ewokLocker.notifyAll();
             }
         }
     }
