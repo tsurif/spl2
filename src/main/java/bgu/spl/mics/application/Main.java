@@ -51,7 +51,9 @@ public class Main {
 
 		R2D2T.start();
 
-
+		try {
+			Thread.sleep(1000);
+		}catch (InterruptedException e){}
 		LeiaT.start();
 
 		try {

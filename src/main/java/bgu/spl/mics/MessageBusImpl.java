@@ -19,6 +19,8 @@ public class MessageBusImpl implements MessageBus {
 	private HashMap<MicroService, Queue<Message>> registeredHash;
 	private HashMap<Event,Future> futureHashMap;
 
+	private final Object messageTypeHashLocker;
+
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
@@ -26,6 +28,8 @@ public class MessageBusImpl implements MessageBus {
 		messageTypeHash=new HashMap<>();
 		registeredHash=new HashMap<>();
 		futureHashMap=new HashMap<>();
+
+		messageTypeHashLocker = new Object();
 	}
 	public static MessageBusImpl getInstance(){
 		return MessageBusHolder.instance;
@@ -33,12 +37,22 @@ public class MessageBusImpl implements MessageBus {
 
 
 	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		if(!messageTypeHash.containsKey(type))
-			messageTypeHash.put(type,new LinkedList<>());
+	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {//TODO allow to work on this together IF the thread not working on the same type
+		synchronized (messageTypeHashLocker) {//this is lock all the messageTypeHash maybe we can lock only the hash for the tyoe we use now
+			System.out.println(m.name +" in sub event");
+			if (!messageTypeHash.containsKey(type)) {
+				messageTypeHash.put(type, new LinkedList<>());
+			}
 
-		if(!messageTypeHash.get(type).contains(registeredHash.get(m)))
-			messageTypeHash.get(type).add(registeredHash.get(m));
+			if (!messageTypeHash.get(type).contains(registeredHash.get(m))) {
+				messageTypeHash.get(type).add(registeredHash.get(m));
+			}
+			System.out.println(type +" queue:");
+			for (Queue<Message> q:
+					messageTypeHash.get(type)) {
+				System.out.println(q);
+			}
+		}
 
 	}
 
@@ -75,10 +89,23 @@ public class MessageBusImpl implements MessageBus {
         return null;
 
 		Queue<Queue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
-		Queue<Message> msQueue = subscribersQueue.remove();
-		subscribersQueue.add(msQueue);
+//		System.out.println("-------------------------------------------------------------------");
+//		System.out.println("pre");
+//		for (Queue<Message> q:
+//			 subscribersQueue) {
+//			System.out.println(q);
+//		}
 
+		Queue<Message> msQueue = subscribersQueue.remove();
 		msQueue.add(e);
+		subscribersQueue.add(msQueue);
+//		System.out.println("post");
+//		for (Queue<Message> q:
+//				subscribersQueue) {
+//			System.out.println(q);
+//		}
+
+
 		Future<T> future = new Future<>();
 		futureHashMap.put(e,future);
 

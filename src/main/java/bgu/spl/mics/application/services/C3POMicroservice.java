@@ -56,5 +56,6 @@ public class C3POMicroservice extends MicroService {
         System.out.println("c3po start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
+        System.out.println("c3po end initialize");
     }
 }
