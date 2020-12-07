@@ -27,7 +27,7 @@ public class LeiaMicroservice extends MicroService {
 	private List<Future> attackFutures;
 	private Future<Boolean> r2d2Future;
 
-    private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+    private final Callback<TerminateBroadcast> terminateCallback =new Callback<TerminateBroadcast>() {
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setLeiaTerminate();
