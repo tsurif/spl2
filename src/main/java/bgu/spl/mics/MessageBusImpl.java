@@ -91,16 +91,17 @@ public class MessageBusImpl implements MessageBus {
 	public <T> Future<T> sendEvent(Event<T> e) {
 		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(e.getClass()) ||
-					messageTypeHash.get(e.getClass()).size() == 0)
+					messageTypeHash.get(e.getClass()).size() == 0) {
 				return null;
-
+			}
+			Future<T> future = new Future<>(); //TODO who using this future for the love of god
 //		synchronized (msgLocker.get(e.getClass())) {
 			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
 			BlockingQueue<Message> msQueue = subscribersQueue.remove();
 			subscribersQueue.add(msQueue);
 			msQueue.add(e);
 			synchronized (futureHashLocker) {
-				Future<T> future = new Future<>(); //TODO who using this future for the love of god
+
 				futureHashMap.put(e, future);
 				return future;
 			}

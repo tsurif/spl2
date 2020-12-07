@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Future<T> {
 	private boolean isDone;
     private T result;
-    private final Object locker = new Object();
+    //private final Object locker = new Object();
 	
 	/**
 	 * This should be the the only public constructor in this class.
@@ -44,9 +44,9 @@ public class Future<T> {
      * Resolves the result of this Future object.
      */
 	public synchronized void resolve (T result) {
-			this.result = result;
-			isDone = true;
-			notifyAll();
+		this.result=result;
+		isDone = true;
+		notifyAll();
 	}
 	
 	/**

@@ -27,7 +27,7 @@ public class LeiaMicroservice extends MicroService {
 	private List<Future> attackFutures;
 	private Future<Boolean> r2d2Future;
 
-    private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+    private final Callback<TerminateBroadcast> terminateCallback =new Callback<TerminateBroadcast>() {
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setLeiaTerminate();
@@ -35,19 +35,19 @@ public class LeiaMicroservice extends MicroService {
         }
     };
 
-    private final Callback<AccomplishBroadcast> accomplishCallback=new Callback<AccomplishBroadcast>() {
-        @Override
-        public void call(AccomplishBroadcast c) {
-            accomplishCount++;
-            if(accomplishCount == attacks.length) {
-                r2d2Future = sendEvent(new DeactivationEvent());
-                if (r2d2Future.get()) {
-                    sendEvent(new BombDestroyerEvent());
-                }
-            }
-
-        }
-    };
+//    private final Callback<AccomplishBroadcast> accomplishCallback=new Callback<AccomplishBroadcast>() {
+//        @Override
+//        public void call(AccomplishBroadcast c) {
+//            accomplishCount++;
+//            if(accomplishCount == attacks.length) {
+//                r2d2Future = sendEvent(new DeactivationEvent());
+//                if (r2d2Future.get()) {
+//                    sendEvent(new BombDestroyerEvent());
+//                }
+//            }
+//
+//        }
+//    };
     public LeiaMicroservice(Attack[] attacks) {//TODO delete the name argument
         super("Leia");
 
@@ -68,14 +68,20 @@ public class LeiaMicroservice extends MicroService {
             Thread.sleep(1000);
         }catch (InterruptedException e){}
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
-        subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
+        //subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack att:attacks) {
             System.out.println(name + " send attack");
             sendAttackEvent(att);
         }
-//        while(!attackFutures.isEmpty()){
-//            attackFutures.
-//        }
+
+        while(!attackFutures.isEmpty()){
+            attackFutures.remove(0).get();
+            System.out.println("-------------------------------------attack sucsses--------------------------------------");
+        }
+        r2d2Future = sendEvent(new DeactivationEvent());
+        if (r2d2Future.get()) {
+            sendEvent(new BombDestroyerEvent());
+        }
     }
 
     public void sendAttackEvent(Attack attack){
@@ -84,5 +90,6 @@ public class LeiaMicroservice extends MicroService {
         if(f != null) {
             attackFutures.add(f);
         }
+
     }
 }
