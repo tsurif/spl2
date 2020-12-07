@@ -80,6 +80,9 @@ public class LeiaMicroservice extends MicroService {
 
     public void sendAttackEvent(Attack attack){
         AttackEvent attackEvent=new AttackEvent(attack);
-        attackFutures.add(sendEvent(attackEvent)) ;
+        Future f = sendEvent(attackEvent);
+        if(f != null) {
+            attackFutures.add(f);
+        }
     }
 }
