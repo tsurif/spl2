@@ -31,17 +31,15 @@ public class Future<T> {
      * 	       
      */
 	public synchronized T get() {
-//		synchronized (locker) {
-			while (!isDone) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-				}
+		while (!isDone) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
 			}
-			return result;
-//		}
+		}
+		return result;
 	}
-	
+
 	/**
      * Resolves the result of this Future object.
      */
@@ -69,7 +67,7 @@ public class Future<T> {
      * 	       wait for {@code timeout} TimeUnits {@code unit}. If time has
      *         elapsed, return null.
      */
-	public T get(long timeout, TimeUnit unit) {
+	public synchronized T get(long timeout, TimeUnit unit) {
 
 		if (!isDone) {
 			try {

@@ -70,7 +70,7 @@ public class LeiaMicroservice extends MicroService {
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
         subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack att:attacks) {
-            System.out.println(name + " send attack");//+ att.toString().substring(att.toString().length()-10,att.toString().length()-1));
+            System.out.println(name + " send attack");
             sendAttackEvent(att);
         }
 //        while(!attackFutures.isEmpty()){
