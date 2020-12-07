@@ -120,9 +120,17 @@ public class MessageBusImpl implements MessageBus {
 				BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
 
 				synchronized (messageTypeHashLocker) {
+					LinkedList<Class<? extends Message>> toRemove = new LinkedList<>();
 					messageTypeHash.forEach((k, v) -> {
 						v.removeIf(q -> q == mQueueRemoved);
+						if(messageTypeHash.get(k).isEmpty()){
+							toRemove.add(k);
+						}
+//							messageTypeHash.remove(k);
 					});
+					for (Class<? extends Message> type:toRemove) {
+						messageTypeHash.remove(type);
+					}
 				}
 			}
 		}

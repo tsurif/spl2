@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
@@ -17,10 +18,11 @@ public class LandoMicroservice  extends MicroService {
     private final Callback<BombDestroyerEvent> bombCallBack= new Callback<BombDestroyerEvent>() {
 
         @Override
-        public void call(BombDestroyerEvent c) {
+        public void call(BombDestroyerEvent event) {
             //TODO: complete this
             try {
                 Thread.sleep(sleepDuration);
+                MessageBusImpl.getInstance().complete(event,event.expectedResult);
                 sendBroadcast(new TerminateBroadcast());
             }catch (InterruptedException e){}
         }

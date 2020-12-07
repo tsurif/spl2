@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Future<T> {
 	private boolean isDone;
     private T result;
+    private final Object locker = new Object();
 	
 	/**
 	 * This should be the the only public constructor in this class.
@@ -29,14 +30,16 @@ public class Future<T> {
      * @return return the result of type T if it is available, if not wait until it is available.
      * 	       
      */
-	public synchronized T get() {
-		
-        while (!isDone) {
-			try {
-				wait();
-			} catch (InterruptedException e){}
+	public T get() {
+		synchronized (locker) {
+			while (!isDone) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+				}
+			}
+			return result;
 		}
-        return result;
 	}
 	
 	/**
@@ -45,7 +48,7 @@ public class Future<T> {
 	public void resolve (T result) {
 		this.result=result;
 		isDone = true;
-//		notifyAll();
+		locker.notifyAll();
 	}
 	
 	/**

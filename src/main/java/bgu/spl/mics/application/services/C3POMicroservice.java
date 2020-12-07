@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
@@ -30,6 +31,7 @@ public class C3POMicroservice extends MicroService {
                 Thread.sleep(event.attack.getDuration());
             }catch (InterruptedException e){}
             Ewoks.getInstance().release(event.attack.getSerials());
+            MessageBusImpl.getInstance().complete(event,event.expectedResult);
             Diary.getInstance().setTotalAttacks();
             Diary.getInstance().setC3POFinish();
             sendBroadcast(new AccomplishBroadcast());
