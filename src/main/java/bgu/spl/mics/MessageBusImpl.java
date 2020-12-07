@@ -16,12 +16,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class MessageBusImpl implements MessageBus {
 
-//TODO implement the round robin demand
+	//TODO implement the round robin demand
 	private HashMap<Class<? extends Message>, Queue<BlockingQueue<Message>>> messageTypeHash;
 	private HashMap<MicroService, BlockingQueue<Message>> registeredHash;
 	private HashMap<Event,Future> futureHashMap;
 
+	private HashMap<Class<? extends Message>,Object> msgLocker;
 	private final Object messageTypeHashLocker;
+
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -31,6 +33,7 @@ public class MessageBusImpl implements MessageBus {
 		registeredHash=new HashMap<>();
 		futureHashMap=new HashMap<>();
 
+		msgLocker=new HashMap<>();
 		messageTypeHashLocker = new Object();
 	}
 	public static MessageBusImpl getInstance(){
@@ -43,9 +46,10 @@ public class MessageBusImpl implements MessageBus {
 		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
+				msgLocker.put(type,new Object());
 			}
 		}
-			messageTypeHash.get(type).add(registeredHash.get(m));
+		messageTypeHash.get(type).add(registeredHash.get(m));
 	}
 
 	@Override
@@ -53,9 +57,11 @@ public class MessageBusImpl implements MessageBus {
 		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
+				msgLocker.put(type,new Object());
 			}
 		}
-			messageTypeHash.get(type).add(registeredHash.get(m));
+		messageTypeHash.get(type).add(registeredHash.get(m));
+
 	}
 
 
@@ -75,29 +81,28 @@ public class MessageBusImpl implements MessageBus {
 		}
 	}
 
-	
+
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		if(!messageTypeHash.containsKey(e.getClass())||
 				messageTypeHash.get(e.getClass()).size()==0)
-        	return null;
-		synchronized (messageTypeHashLocker) {
+			return null;
+//		synchronized (msgLocker.get(e.getClass())) {
 			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
 			BlockingQueue<Message> msQueue = subscribersQueue.remove();
 			subscribersQueue.add(msQueue);
 			msQueue.add(e);
-		}
-		Future<T> future = new Future<>();
-		futureHashMap.put(e,future);
-		return future;
+
+			Future<T> future = new Future<>();
+			futureHashMap.put(e,future);
+			return future;
+//		}
 		//TODO who using this future for the love of god
 	}
 
 	@Override
 	public void register(MicroService m) {
-		System.out.println(m.name + " is register");
 		registeredHash.put(m,new LinkedBlockingQueue<>());//TODO ??change that to something thread - safety???
-		System.out.println(m.name + " done register");
 	}
 
 	@Override
