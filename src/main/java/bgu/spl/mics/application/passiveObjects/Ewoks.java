@@ -12,8 +12,7 @@ import java.util.List;
  * You can add ONLY private methods and fields to this class.
  */
 public class Ewoks {
-    Ewok[] ewoksArr;
-    private final Object ewokLocker = new Object();
+    private Ewok[] ewoksArr;
     private static class EwoksHolder{
         private static Ewoks instance = new Ewoks();
     }
@@ -28,33 +27,18 @@ public class Ewoks {
             ewoksArr[i] = new Ewok(i);
         }
     }
+
     public void acquire(List<Integer> ewoksToUse, String name){//assuming ewoksTouse is sorted
         System.out.println("Ewoks resiving request By" + name);
         for (Integer i:ewoksToUse) {
-            synchronized (ewokLocker) {
-                while (!ewoksArr[i].available) {
-                    try {
-                        ewokLocker.wait();
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-                System.out.println("Ewok num " + i + " calls for duty to " + name );
-                ewoksArr[i].acquire();
-            }
-        //}
+            ewoksArr[i].acquire();
+            System.out.println("Ewok num " + i + " calls for duty to " + name );
+        }
     }
 
     public void release(List<Integer> ewoksToUse){
         for (Integer i: ewoksToUse){
-            synchronized (ewokLocker) {
             ewoksArr[i].release();
-                System.out.println("Ewok num " + i + " dismiss" );
-            ewokLocker.notifyAll();
-            }
         }
     }
-
-
-
 }

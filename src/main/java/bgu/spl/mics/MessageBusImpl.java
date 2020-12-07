@@ -22,6 +22,8 @@ public class MessageBusImpl implements MessageBus {
 	private HashMap<Event,Future> futureHashMap;
 
 	private final Object messageTypeHashLocker;
+	private final Object registeredHashLocker;
+	private final Object futureHashLocker;
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -32,6 +34,8 @@ public class MessageBusImpl implements MessageBus {
 		futureHashMap=new HashMap<>();
 
 		messageTypeHashLocker = new Object();
+		registeredHashLocker = new Object();
+		futureHashLocker = new Object();
 	}
 	public static MessageBusImpl getInstance(){
 		return MessageBusHolder.instance;
@@ -44,8 +48,9 @@ public class MessageBusImpl implements MessageBus {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-		}
 			messageTypeHash.get(type).add(registeredHash.get(m));
+		}
+
 	}
 
 	@Override
@@ -54,8 +59,8 @@ public class MessageBusImpl implements MessageBus {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
 			}
-		}
 			messageTypeHash.get(type).add(registeredHash.get(m));
+		}
 	}
 
 
@@ -66,6 +71,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
+		synchronized (messageTypeHashLocker){
 		if(!messageTypeHash.containsKey(b.getClass())){
 			throw new IllegalArgumentException("No one subscribed to this event"); //throw error - no one subscribe to this broadcast
 		}
@@ -73,45 +79,49 @@ public class MessageBusImpl implements MessageBus {
 		for (BlockingQueue<Message> elem:subscribersQueue) {
 			elem.add(b);
 		}
+		}
 	}
 
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		if(!messageTypeHash.containsKey(e.getClass())||
-				messageTypeHash.get(e.getClass()).size()==0)
-        	return null;
 		synchronized (messageTypeHashLocker) {
+			if (!messageTypeHash.containsKey(e.getClass()) ||
+					messageTypeHash.get(e.getClass()).size() == 0)
+				return null;
+			Future<T> future = new Future<>();
 			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
 			BlockingQueue<Message> msQueue = subscribersQueue.remove();
 			subscribersQueue.add(msQueue);
 			msQueue.add(e);
+			synchronized (futureHashLocker) {
+				futureHashMap.put(e, future);
+				return future;
+			}
 		}
-		Future<T> future = new Future<>();
-		futureHashMap.put(e,future);
-		return future;
 		//TODO who using this future for the love of god
 	}
 
 	@Override
 	public void register(MicroService m) {
-		System.out.println(m.name + " is register");
-		registeredHash.put(m,new LinkedBlockingQueue<>());//TODO ??change that to something thread - safety???
-		System.out.println(m.name + " done register");
+		synchronized (registeredHashLocker) {
+			registeredHash.put(m, new LinkedBlockingQueue<>());
+		}
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		if(registeredHash.containsKey(m)) {
-			BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
+		synchronized (registeredHashLocker) {
+			if (registeredHash.containsKey(m)) {
+				BlockingQueue<Message> mQueueRemoved = registeredHash.remove(m);
 
-			synchronized (messageTypeHashLocker) {
-				messageTypeHash.forEach((k, v) -> {
-					v.removeIf(q -> q == mQueueRemoved);
-				});
+				synchronized (messageTypeHashLocker) {
+					messageTypeHash.forEach((k, v) -> {
+						v.removeIf(q -> q == mQueueRemoved);
+					});
+				}
 			}
 		}
-
 	}
 
 
@@ -120,11 +130,4 @@ public class MessageBusImpl implements MessageBus {
 		BlockingQueue<Message> msQueue = registeredHash.get(m);
 		return msQueue.take();
 	}
-
-//	public void restart(){
-//		messageTypeHash.clear();
-//		registeredHash.clear();
-//		futureHashMap.clear();
-//
-//	}
 }

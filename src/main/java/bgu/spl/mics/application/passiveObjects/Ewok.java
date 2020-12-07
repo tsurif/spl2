@@ -9,7 +9,7 @@ package bgu.spl.mics.application.passiveObjects;
 public class Ewok {
 	int serialNumber;
 	boolean available;
-	public final Object lock;
+	private final Object lock;
 
     public Ewok (int serialNumber){
         available = true;
@@ -19,14 +19,21 @@ public class Ewok {
     /**
      * Acquires an Ewok
      */
-    public void acquire() {
-		available = false;
+    public synchronized void acquire() {
+        while (!available)
+            try{
+                wait();
+            }catch (InterruptedException e){}
+        available = false;
     }
 
     /**
      * release an Ewok
      */
-    public void release() {
-    	available = true;
+    public synchronized void release() {//throws IllegalAccessException {
+        //if(available) throw new IllegalAccessException("\"one shuold not release an Ewok - if free the ewok is\" m. Yoda");//TODO throws exeption is available = true?
+        available = true;
+        System.out.println("Ewok num " + serialNumber + " dismiss" );
+        notifyAll();
     }
 }

@@ -37,6 +37,7 @@ public class HanSoloMicroservice extends MicroService {
             Diary.getInstance().setHanSoloFinish();
             sendBroadcast(new AccomplishBroadcast());
             //TODO add dairy shit
+            //TODO call complete() on the event
 
         }
     };
@@ -51,7 +52,7 @@ public class HanSoloMicroservice extends MicroService {
     };
 
     public HanSoloMicroservice() {
-        super("Han");//TODO is this the right name?
+        super("Han");
     }
 
 
@@ -60,9 +61,6 @@ public class HanSoloMicroservice extends MicroService {
         System.out.println("Han start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
-//        try{
-//            Thread.sleep(5000);
-//        }catch (InterruptedException e){}
         System.out.println("Han end initialize");
     }
 }
