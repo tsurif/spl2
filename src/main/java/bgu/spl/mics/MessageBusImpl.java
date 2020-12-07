@@ -16,14 +16,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class MessageBusImpl implements MessageBus {
 
-//TODO implement the round robin demand
+	//TODO implement the round robin demand
 	private HashMap<Class<? extends Message>, Queue<BlockingQueue<Message>>> messageTypeHash;
 	private HashMap<MicroService, BlockingQueue<Message>> registeredHash;
 	private HashMap<Event,Future> futureHashMap;
 
+	//private HashMap<Class<? extends Message>,Object> msgLocker;
 	private final Object messageTypeHashLocker;
 	private final Object registeredHashLocker;
 	private final Object futureHashLocker;
+
 
 	private static class MessageBusHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -33,6 +35,7 @@ public class MessageBusImpl implements MessageBus {
 		registeredHash=new HashMap<>();
 		futureHashMap=new HashMap<>();
 
+		//msgLocker=new HashMap<>();
 		messageTypeHashLocker = new Object();
 		registeredHashLocker = new Object();
 		futureHashLocker = new Object();
@@ -47,10 +50,10 @@ public class MessageBusImpl implements MessageBus {
 		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
+				//msgLocker.put(type,new Object());
 			}
 			messageTypeHash.get(type).add(registeredHash.get(m));
 		}
-
 	}
 
 	@Override
@@ -58,6 +61,7 @@ public class MessageBusImpl implements MessageBus {
 		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(type)) {
 				messageTypeHash.put(type, new LinkedList<>());
+				//msgLocker.put(type,new Object());
 			}
 			messageTypeHash.get(type).add(registeredHash.get(m));
 		}
@@ -82,14 +86,15 @@ public class MessageBusImpl implements MessageBus {
 		}
 	}
 
-	
+
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		synchronized (messageTypeHashLocker) {
 			if (!messageTypeHash.containsKey(e.getClass()) ||
 					messageTypeHash.get(e.getClass()).size() == 0)
 				return null;
-			Future<T> future = new Future<>();
+			Future<T> future = new Future<>(); //TODO who using this future for the love of god
+//		synchronized (msgLocker.get(e.getClass())) {
 			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
 			BlockingQueue<Message> msQueue = subscribersQueue.remove();
 			subscribersQueue.add(msQueue);
@@ -99,7 +104,6 @@ public class MessageBusImpl implements MessageBus {
 				return future;
 			}
 		}
-		//TODO who using this future for the love of god
 	}
 
 	@Override
