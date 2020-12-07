@@ -1,13 +1,14 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.AccomplishBroadcast;
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * LeiaMicroservices Initialized with Attack objects, and sends them as  {@link AttackEvent}.
@@ -21,6 +22,8 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
 	private int accomplishCount;
+	private List<Future> attackFutures;
+	private Future<Boolean> r2d2Future;
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
@@ -34,7 +37,13 @@ public class LeiaMicroservice extends MicroService {
         @Override
         public void call(AccomplishBroadcast c) {
             accomplishCount++;
-            if(accomplishCount == attacks.length) sendEvent(new DeactivationEvent());
+            if(accomplishCount == attacks.length) {
+                r2d2Future = sendEvent(new DeactivationEvent());
+                if (r2d2Future.get()) {
+                    sendEvent(new BombDestroyerEvent());
+                }
+            }
+
         }
     };
     public LeiaMicroservice(Attack[] attacks) {//TODO delete the name argument
@@ -44,6 +53,7 @@ public class LeiaMicroservice extends MicroService {
         for (Attack a: attacks) {
             a.sort();//TODO change the logic to avoid this methods
         }
+        attackFutures = new LinkedList<>();
 		accomplishCount = 0;
 
 
@@ -61,10 +71,13 @@ public class LeiaMicroservice extends MicroService {
             System.out.println(name + " send attack");//+ att.toString().substring(att.toString().length()-10,att.toString().length()-1));
             sendAttackEvent(att);
         }
+//        while(!attackFutures.isEmpty()){
+//            attackFutures.
+//        }
     }
 
     public void sendAttackEvent(Attack attack){
         AttackEvent attackEvent=new AttackEvent(attack);
-        sendEvent(attackEvent);
+        attackFutures.add(sendEvent(attackEvent)) ;
     }
 }

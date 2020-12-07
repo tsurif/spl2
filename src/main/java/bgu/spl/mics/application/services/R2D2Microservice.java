@@ -25,7 +25,7 @@ public class R2D2Microservice extends MicroService {
             try {
                 Thread.sleep(sleepDuration);
                 Diary.getInstance().setR2D2Deactivate();
-                sendEvent(new BombDestroyerEvent());// TODO do i need to save the future?
+                //sendEvent(new BombDestroyerEvent());// TODO do i need to save the future?
             }catch(InterruptedException e){}
         }
     };

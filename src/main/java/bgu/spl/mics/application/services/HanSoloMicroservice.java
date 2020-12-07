@@ -37,7 +37,7 @@ public class HanSoloMicroservice extends MicroService {
             Diary.getInstance().setHanSoloFinish();
             sendBroadcast(new AccomplishBroadcast());
             //TODO add dairy shit
-            //TODO call complete() on the event
+
 
         }
     };
