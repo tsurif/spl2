@@ -94,18 +94,20 @@ public class MessageBusImpl implements MessageBus {
 					messageTypeHash.get(e.getClass()).size() == 0) {
 				return null;
 			}
-			Future<T> future = new Future<>(); //TODO who using this future for the love of god
+			Future<T> future;  //TODO who using this future for the love of god
+			synchronized (futureHashLocker) {
+				future = new Future<>();
+				futureHashMap.put(e, future);
+
+			}
 //		synchronized (msgLocker.get(e.getClass())) {
 			Queue<BlockingQueue<Message>> subscribersQueue = messageTypeHash.get(e.getClass());
 			BlockingQueue<Message> msQueue = subscribersQueue.remove();
 			subscribersQueue.add(msQueue);
 			msQueue.add(e);
-			synchronized (futureHashLocker) {
-
-				futureHashMap.put(e, future);
-				return future;
-			}
+			return future;
 		}
+
 	}
 
 	@Override
