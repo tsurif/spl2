@@ -20,10 +20,12 @@ public class Ewok {
      * Acquires an Ewok
      */
     public synchronized void acquire() {
-        while (!available)
-            try{
+        while (!available) {
+            try {
                 wait();
-            }catch (InterruptedException e){}
+            } catch (InterruptedException e) {
+            }
+        }
         available = false;
     }
 
