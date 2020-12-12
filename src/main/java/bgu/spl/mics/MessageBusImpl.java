@@ -79,10 +79,10 @@ public class MessageBusImpl implements MessageBus {
 			return null;
 		}
 		Future<T> future;
-		synchronized (futureHashLocker) {
+//		synchronized (futureHashLocker) {
 			future = new Future<>();
 			futureHashMap.put(e, future);
-		}
+//		}
 		messageTypeHash.get(e.getClass()).sendEvant(e);
 		return future;
 	}
