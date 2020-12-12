@@ -15,6 +15,9 @@ import sun.awt.windows.ThemeReader;
  */
 public class LandoMicroservice  extends MicroService {
     private long sleepDuration;
+    /**
+     * a Callback for when the  Microservice behave after getting a BombDestroyer-Event
+     */
     private final Callback<BombDestroyerEvent> bombCallBack= new Callback<BombDestroyerEvent>() {
 
         @Override
@@ -27,7 +30,9 @@ public class LandoMicroservice  extends MicroService {
             }catch (InterruptedException e){}
         }
     };
-
+    /**
+     * a Callback for when the  Microservice behave after getting a Terminate order
+     */
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
         public void call(TerminateBroadcast c) {

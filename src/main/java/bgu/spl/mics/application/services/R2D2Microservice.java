@@ -18,6 +18,9 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class R2D2Microservice extends MicroService {
     private long sleepDuration;
+    /**
+     * a Callback for when the  Microservice behave after getting a Deactivate-Event
+     */
     private final Callback<DeactivationEvent> deactivateCallBack= new Callback<DeactivationEvent>() {
 
         @Override
@@ -33,7 +36,9 @@ public class R2D2Microservice extends MicroService {
             }catch(InterruptedException e){}
         }
     };
-
+    /**
+     * a Callback for when the  Microservice behave after getting a Terminate order
+     */
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
         public void call(TerminateBroadcast c) {

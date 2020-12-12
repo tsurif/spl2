@@ -39,6 +39,9 @@ public class MessageBusImpl implements MessageBus {
 		return bgu.spl.mics.MessageBusImpl.MessageBusHolder.instance;
 	}
 
+	/**
+	 * Blocking
+	 */
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {//TODO allow to work on this together IF the thread not working on the same type
 		synchronized (messageTypeHashLocker) {
@@ -48,7 +51,9 @@ public class MessageBusImpl implements MessageBus {
 			messageTypeHash.get(type).add(registeredHash.get(m));
 		}
 	}
-
+	/**
+	 * Blocking
+	 */
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		synchronized (messageTypeHashLocker) {

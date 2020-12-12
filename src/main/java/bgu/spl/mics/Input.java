@@ -8,6 +8,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 
+/**
+ * an input object to store the information from the json file
+ * @attacks Attack-passive object we need to handle
+ * @R2D2 sleep time for Deactivation-Event
+ * @Lando sleep time for BombDestroyer-Event
+ * @Ewoks how many Ewoks we need to handle the attacks
+ */
 public class Input {
     private Attack[] attacks;
     private int R2D2;

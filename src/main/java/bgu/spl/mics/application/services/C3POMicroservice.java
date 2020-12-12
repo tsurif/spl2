@@ -20,8 +20,10 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class C3POMicroservice extends MicroService {
 
+    /**
+     * a Callback for when the  Microservice behave after getting an Attack-Event
+     */
     private final Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
-
         @Override
         public void call(AttackEvent event) {
             //TODO: complete this
@@ -42,7 +44,9 @@ public class C3POMicroservice extends MicroService {
 
         }
     };
-
+    /**
+     * a Callback for when the  Microservice behave after getting a Terminate order
+     */
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
         @Override
         public void call(TerminateBroadcast c) {
