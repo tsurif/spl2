@@ -27,6 +27,9 @@ public class LeiaMicroservice extends MicroService {
 	private List<Future> attackFutures;
 	private Future<Boolean> r2d2Future;
 
+    /**
+     * a Callback for when the  Microservice behave after getting a Terminate order
+     */
     private final Callback<TerminateBroadcast> terminateCallback =new Callback<TerminateBroadcast>() {
         @Override
         public void call(TerminateBroadcast c) {
@@ -34,20 +37,6 @@ public class LeiaMicroservice extends MicroService {
             terminate();
         }
     };
-
-//    private final Callback<AccomplishBroadcast> accomplishCallback=new Callback<AccomplishBroadcast>() {
-//        @Override
-//        public void call(AccomplishBroadcast c) {
-//            accomplishCount++;
-//            if(accomplishCount == attacks.length) {
-//                r2d2Future = sendEvent(new DeactivationEvent());
-//                if (r2d2Future.get()) {
-//                    sendEvent(new BombDestroyerEvent());
-//                }
-//            }
-//
-//        }
-//    };
     public LeiaMicroservice(Attack[] attacks) {//TODO delete the name argument
         super("Leia");
 

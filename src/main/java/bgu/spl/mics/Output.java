@@ -1,7 +1,18 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.passiveObjects.Diary;
-
+/**
+ * an output object to store the information to a json file
+ * @totalAttacks number of attacks we counted
+ * @HanSoloFinish the time Han Solo handled all his attack event he collected
+ * @C3POFinish the time C3PO handled all his attack event he collected
+ * @R2D2Deactivate the time R2D2 finish his Deactivation-Event
+ * @LeiaTerminate the time LeiaThread Terminated
+ * @HanSoloTerminate the time HanSoloThread Terminated
+ * @C3POTerminate the time C3POThread Terminated
+ * @R2D2Terminate the time R2D2Thread Terminated
+ * @LandoTerminate the time LandoThread Terminated
+ */
 public class Output {
     private int totalAttacks;
     private long HanSoloFinish;
