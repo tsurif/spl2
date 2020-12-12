@@ -27,8 +27,14 @@ public class Ewoks {
             ewoksArr[i] = new Ewok(i);
         }
     }
-
-    public void acquire(List<Integer> ewoksToUse, String name){//assuming ewoksTouse is sorted
+    /**
+     *this is a blocking method.
+     * try to acquire the ewoks needed to accomplish the Attack.
+     * if ewok isn't available the method will wait.
+     * assuming ewoksToUse is sorted.
+     * @param ewoksToUse the serial numbers to use in an attack.
+     */
+    public void acquire(List<Integer> ewoksToUse, String name){
         System.out.println("Ewoks resiving request By" + name);
         for (Integer i:ewoksToUse) {
             ewoksArr[i].acquire();
