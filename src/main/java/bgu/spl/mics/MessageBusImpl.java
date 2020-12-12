@@ -91,6 +91,10 @@ public class MessageBusImpl implements MessageBus {
 		return future;
 	}
 
+	/**
+	 * Blocking
+	 * @param m the micro-service to create a queue for.
+	 */
 	@Override
 	public void register(MicroService m) {
 		synchronized (registeredHashLocker) {
@@ -98,6 +102,10 @@ public class MessageBusImpl implements MessageBus {
 		}
 	}
 
+	/**
+	 * Blocking
+	 * @param m the micro-service to unregister.
+	 */
 	@Override
 	public void unregister(MicroService m) {
 		synchronized (registeredHashLocker) {
