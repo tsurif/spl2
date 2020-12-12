@@ -3,6 +3,7 @@ package bgu.spl.mics;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -14,9 +15,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class MessageBusImpl implements MessageBus {
 
-	private HashMap<Class<? extends Message>, PostOffice> messageTypeHash;
-	private HashMap<MicroService, BlockingQueue<Message>> registeredHash;
-	private HashMap<Event,Future> futureHashMap;
+	private ConcurrentHashMap<Class<? extends Message>, PostOffice> messageTypeHash;
+	private ConcurrentHashMap<MicroService, BlockingQueue<Message>> registeredHash;
+	private ConcurrentHashMap<Event,Future> futureHashMap;
 
 	private final Object messageTypeHashLocker;
 	private final Object registeredHashLocker;
@@ -26,9 +27,9 @@ public class MessageBusImpl implements MessageBus {
 		private static bgu.spl.mics.MessageBusImpl instance = new bgu.spl.mics.MessageBusImpl();
 	}
 	private MessageBusImpl(){
-		messageTypeHash=new HashMap<>();
-		registeredHash=new HashMap<>();
-		futureHashMap=new HashMap<>();
+		messageTypeHash=new ConcurrentHashMap<>();
+		registeredHash=new ConcurrentHashMap<>();
+		futureHashMap=new ConcurrentHashMap<>();
 
 		messageTypeHashLocker = new Object();
 		registeredHashLocker = new Object();
