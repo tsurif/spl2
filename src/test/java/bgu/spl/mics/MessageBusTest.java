@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.messages.MockEvent;
 import org.junit.jupiter.api.AfterEach;
@@ -37,7 +38,10 @@ class MessageBusTest {
 
     @AfterEach
     void TearDown(){
-        //messageBus.restart();
+        messageBus.unregister(ms1);
+        messageBus.unregister(ms2);
+        callbackBroadCast.isCalled=false;
+        callBackEvent.isCalled=false;
     }
     @Test
     void subscribeEvent() { //check if the sendEvent dont return null after we add 1 subscriber
@@ -57,8 +61,12 @@ class MessageBusTest {
     void subscribeBroadcast() { //check if the callback was called by the microService after it was registered
         ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         messageBus.sendBroadcast(broadCast);
+        try{
+            Message msg=messageBus.awaitMessage(ms1);
+            assertNotNull(msg);
+        }catch (InterruptedException ex){
 
-        assertTrue(callbackBroadCast.isCalled);
+        }
     }
 
     @Test
@@ -69,7 +77,14 @@ class MessageBusTest {
         ms2.subscribeBroadcast(BroadCastMock.class, callbackBroadCast2);
 
         messageBus.sendBroadcast(broadCast);
-        assertTrue(callbackBroadCast.isCalled && callbackBroadCast2.isCalled);
+        try{
+            Message msg1=messageBus.awaitMessage(ms1);
+            Message msg2=messageBus.awaitMessage(ms2);
+            assertNotNull(msg1);
+            assertNotNull(msg2);
+        }catch (InterruptedException ex){
+
+        }
     }
 
     @Test
@@ -92,8 +107,10 @@ class MessageBusTest {
     void sendEvent() { //check if the callBack was called after the sendEvent
         ms1.subscribeEvent(AttackEvent.class,callBackEvent);
         messageBus.sendEvent(attackEvent);
-
-        assertTrue(callBackEvent.isCalled);
+        try{
+            Message msg=messageBus.awaitMessage(ms1);
+            assertNotNull(msg);
+        }catch (InterruptedException ex){}
     }
 
     @Test
@@ -145,10 +162,12 @@ class MessageBusTest {
     void unregister_From_BroadCast() { //check if we unregister microservice from broadcast, his callback does not activate
         ms1.subscribeBroadcast(BroadCastMock.class, callbackBroadCast);
         messageBus.unregister(ms1);
+        try {
+            messageBus.sendBroadcast(broadCast);
+        }catch(NullPointerException ex){
+            assertTrue(true);
+        }
 
-        messageBus.sendBroadcast(broadCast);
-
-        assertFalse(callbackBroadCast.isCalled);
     }
     @Test
     void awaitMessage(){

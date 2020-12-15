@@ -65,7 +65,6 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void sendBroadcast(Broadcast b) {
 		PostOffice postOffice = messageTypeHash.get(b.getClass());
-		if (postOffice == null) throw new IllegalArgumentException("No one subscribed to this event");
 		postOffice.sendBroadcast(b);
 	}
 
