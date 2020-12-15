@@ -9,12 +9,10 @@ package bgu.spl.mics.application.passiveObjects;
 public class Ewok {
 	private int serialNumber;
 	public boolean available;
-	//private final Object lock;
 
     public Ewok (int serialNumber){
         available = true;
         this.serialNumber = serialNumber;
-        //lock=new Object();
     }
     /**
      * Acquires an Ewok
@@ -33,9 +31,7 @@ public class Ewok {
      * release an Ewok
      */
     public synchronized void release() {//throws IllegalAccessException {
-        //if(available) throw new IllegalAccessException("\"one shuold not release an Ewok - if free the ewok is\" m. Yoda");//TODO throws exeption is available = true?
         available = true;
-//        System.out.println("Ewok num " + serialNumber + " dismiss" );
         notifyAll();
     }
 }

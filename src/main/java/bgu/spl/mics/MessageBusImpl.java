@@ -20,7 +20,6 @@ public class MessageBusImpl implements MessageBus {
 
 	private final Object messageTypeHashLocker;
 	private final Object registeredHashLocker;
-	private final Object futureHashLocker;
 
 	private static class MessageBusHolder{
 		private static bgu.spl.mics.MessageBusImpl instance = new bgu.spl.mics.MessageBusImpl();
@@ -32,7 +31,6 @@ public class MessageBusImpl implements MessageBus {
 
 		messageTypeHashLocker = new Object();
 		registeredHashLocker = new Object();
-		futureHashLocker = new Object();
 
 	}
 	public static bgu.spl.mics.MessageBusImpl getInstance(){
@@ -78,10 +76,8 @@ public class MessageBusImpl implements MessageBus {
 			return null;
 		}
 		Future<T> future;
-//		synchronized (futureHashLocker) {
 			future = new Future<>();
 			futureHashMap.put(e, future);
-//		}
 		messageTypeHash.get(e.getClass()).sendEvent(e);
 		return future;
 	}

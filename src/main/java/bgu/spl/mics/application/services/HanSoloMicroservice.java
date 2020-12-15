@@ -4,7 +4,6 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-//import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
@@ -26,8 +25,6 @@ public class HanSoloMicroservice extends MicroService {
 
         @Override
         public void call(AttackEvent event) {
-            //TODO: complete this
-//            System.out.println("Han working on Attack");
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
             try {
                 Thread.sleep(event.attack.getDuration());
@@ -38,8 +35,6 @@ public class HanSoloMicroservice extends MicroService {
 
             Diary.getInstance().setTotalAttacks();
             Diary.getInstance().setHanSoloFinish();
-            //sendBroadcast(new AccomplishBroadcast());
-            //TODO add dairy shit
 
 
         }
@@ -61,9 +56,7 @@ public class HanSoloMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-//        System.out.println("Han start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
-//        System.out.println("Han end initialize");
     }
 }

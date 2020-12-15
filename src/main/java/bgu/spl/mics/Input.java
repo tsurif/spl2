@@ -1,12 +1,5 @@
 package bgu.spl.mics;
-import com.google.gson.Gson;
 import bgu.spl.mics.application.passiveObjects.Attack;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
 
 public class Input {
     private Attack[] attacks;

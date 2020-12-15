@@ -3,7 +3,6 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Diary;
@@ -22,13 +21,11 @@ public class R2D2Microservice extends MicroService {
 
         @Override
         public void call(DeactivationEvent event) {
-            //TODO: complete this
             try {
                 Thread.sleep(sleepDuration);
                 Diary.getInstance().setR2D2Deactivate();
 
                 MessageBusImpl.getInstance().complete(event,event.expectedResult);
-                //sendEvent(new BombDestroyerEvent());// TODO do i need to save the future?
 
             }catch(InterruptedException e){}
         }
@@ -48,7 +45,6 @@ public class R2D2Microservice extends MicroService {
 
     @Override
     protected void initialize() {
-        //System.out.println("R2D2 start initialize");
         subscribeEvent(DeactivationEvent.class,deactivateCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
     }

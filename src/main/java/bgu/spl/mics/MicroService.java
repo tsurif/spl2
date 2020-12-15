@@ -1,10 +1,6 @@
 package bgu.spl.mics;
 
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.passiveObjects.Diary;
-
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -177,17 +173,14 @@ public abstract class MicroService implements Runnable {
         MessageBusImpl.getInstance().register(this);
         // initialization
         initialize();
-    	while(!isTerminated) {//while(!Thread.correntTheard.isInterrupted()){
+    	while(!isTerminated) {
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
-//                System.out.println(name+" recive massege");
                 Callback callback = hashMap.get(message.getClass());
                 callback.call(message);
             }catch (InterruptedException e){
-                //Thread.currentThread().interrupt();
             }
         }
-    	//terminate()
     	//unregistration
         MessageBusImpl.getInstance().unregister(this);//TODO insert unregister into the terminate logic.
 

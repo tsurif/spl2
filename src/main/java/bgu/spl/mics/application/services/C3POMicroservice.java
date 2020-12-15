@@ -3,7 +3,6 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-//import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
@@ -24,8 +23,6 @@ public class C3POMicroservice extends MicroService {
 
         @Override
         public void call(AttackEvent event) {
-            //TODO: complete this
-//            System.out.println("C3PO working on Attack");
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
             try {
                 Thread.sleep(event.attack.getDuration());
@@ -35,11 +32,6 @@ public class C3POMicroservice extends MicroService {
 
             Diary.getInstance().setTotalAttacks();
             Diary.getInstance().setC3POFinish();
-            //sendBroadcast(new AccomplishBroadcast());
-            //TODO add dairy shit
-            //Sometime
-
-
         }
     };
 
@@ -56,13 +48,8 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-//        System.out.println("c3po start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
 
-//        try{
-//            Thread.sleep(5000);
-//        }catch (InterruptedException e){}
-//        System.out.println("c3po end initialize");
     }
 }
