@@ -22,7 +22,11 @@ public class HanSoloMicroservice extends MicroService {
 
 
     private final Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
-
+        /**
+         * Han Solo acquire Ewoks(According to the attack's serials), commit the attack(sleep)
+         * resolve the Attack event and then release the Ewoks
+         * @param event
+         */
         @Override
         public void call(AttackEvent event) {
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
@@ -42,6 +46,10 @@ public class HanSoloMicroservice extends MicroService {
 
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setHanSoloTerminate();

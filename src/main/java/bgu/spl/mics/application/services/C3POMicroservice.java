@@ -20,7 +20,11 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 public class C3POMicroservice extends MicroService {
 
     private final Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
-
+        /**
+         * C3PO acquire Ewoks(According to the attack's serials), commit the attack(sleep)
+         * resolve the Attack event and then release the Ewoks
+         * @param event
+         */
         @Override
         public void call(AttackEvent event) {
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
@@ -36,6 +40,10 @@ public class C3POMicroservice extends MicroService {
     };
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setC3POTerminate();

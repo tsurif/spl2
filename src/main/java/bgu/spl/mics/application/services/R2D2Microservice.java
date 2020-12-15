@@ -18,7 +18,10 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 public class R2D2Microservice extends MicroService {
     private long sleepDuration;
     private final Callback<DeactivationEvent> deactivateCallBack= new Callback<DeactivationEvent>() {
-
+        /**
+         * R2D2 deactivate the shields(sleep) and then resolve the Deactivate event
+         * @param event
+         */
         @Override
         public void call(DeactivationEvent event) {
             try {
@@ -32,6 +35,10 @@ public class R2D2Microservice extends MicroService {
     };
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setR2D2Terminate();

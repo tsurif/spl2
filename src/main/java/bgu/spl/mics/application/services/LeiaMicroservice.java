@@ -23,11 +23,14 @@ import java.util.List;
 
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
-	private int accomplishCount;
 	private List<Future> attackFutures;
 	private Future<Boolean> r2d2Future;
 
     private final Callback<TerminateBroadcast> terminateCallback =new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setLeiaTerminate();
@@ -42,9 +45,6 @@ public class LeiaMicroservice extends MicroService {
             a.sort();
         }
         attackFutures = new LinkedList<>();
-		accomplishCount = 0;
-
-
     }
 
     @Override
