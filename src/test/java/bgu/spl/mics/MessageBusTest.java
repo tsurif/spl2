@@ -37,7 +37,10 @@ class MessageBusTest {
 
     @AfterEach
     void TearDown(){
-        //messageBus.restart();
+        messageBus.unregister(ms1);
+        messageBus.unregister(ms2);
+        callbackBroadCast.isCalled=false;
+        callBackEvent.isCalled=false;
     }
     @Test
     void subscribeEvent() { //check if the sendEvent dont return null after we add 1 subscriber
