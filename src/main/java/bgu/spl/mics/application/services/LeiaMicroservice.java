@@ -48,12 +48,12 @@ public class LeiaMicroservice extends MicroService {
 //
 //        }
 //    };
-    public LeiaMicroservice(Attack[] attacks) {//TODO delete the name argument
+    public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 
 		this.attacks = attacks;
         for (Attack a: attacks) {
-            a.sort();//TODO change the logic to avoid this methods
+            a.sort();
         }
         attackFutures = new LinkedList<>();
 		accomplishCount = 0;
