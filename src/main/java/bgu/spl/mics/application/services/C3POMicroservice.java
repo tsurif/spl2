@@ -3,7 +3,6 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-//import bgu.spl.mics.application.messages.AccomplishBroadcast;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
@@ -21,11 +20,13 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 public class C3POMicroservice extends MicroService {
 
     private final Callback<AttackEvent> attackCallBack= new Callback<AttackEvent>() {
-
+        /**
+         * C3PO acquire Ewoks(According to the attack's serials), commit the attack(sleep)
+         * resolve the Attack event and then release the Ewoks
+         * @param event
+         */
         @Override
         public void call(AttackEvent event) {
-            //TODO: complete this
-            System.out.println("C3PO working on Attack");
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
             try {
                 Thread.sleep(event.attack.getDuration());
@@ -35,15 +36,14 @@ public class C3POMicroservice extends MicroService {
 
             Diary.getInstance().setTotalAttacks();
             Diary.getInstance().setC3POFinish();
-            //sendBroadcast(new AccomplishBroadcast());
-            //TODO add dairy shit
-            //Sometime
-
-
         }
     };
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setC3POTerminate();
@@ -56,13 +56,8 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        System.out.println("c3po start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
 
-//        try{
-//            Thread.sleep(5000);
-//        }catch (InterruptedException e){}
-        System.out.println("c3po end initialize");
     }
 }

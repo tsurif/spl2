@@ -1,6 +1,5 @@
 package bgu.spl.mics;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +20,6 @@ public class MessageBusImpl implements MessageBus {
 
 	private final Object messageTypeHashLocker;
 	private final Object registeredHashLocker;
-	private final Object futureHashLocker;
 
 	private static class MessageBusHolder{
 		private static bgu.spl.mics.MessageBusImpl instance = new bgu.spl.mics.MessageBusImpl();
@@ -33,7 +31,6 @@ public class MessageBusImpl implements MessageBus {
 
 		messageTypeHashLocker = new Object();
 		registeredHashLocker = new Object();
-		futureHashLocker = new Object();
 
 	}
 	public static bgu.spl.mics.MessageBusImpl getInstance(){
@@ -69,7 +66,7 @@ public class MessageBusImpl implements MessageBus {
 	public void sendBroadcast(Broadcast b) {
 		PostOffice postOffice = messageTypeHash.get(b.getClass());
 		if (postOffice == null) throw new IllegalArgumentException("No one subscribed to this event");
-		postOffice.sendBrodcast(b);
+		postOffice.sendBroadcast(b);
 	}
 
 	@Override
@@ -79,11 +76,9 @@ public class MessageBusImpl implements MessageBus {
 			return null;
 		}
 		Future<T> future;
-//		synchronized (futureHashLocker) {
 			future = new Future<>();
 			futureHashMap.put(e, future);
-//		}
-		messageTypeHash.get(e.getClass()).sendEvant(e);
+		messageTypeHash.get(e.getClass()).sendEvent(e);
 		return future;
 	}
 

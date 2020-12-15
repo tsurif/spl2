@@ -33,13 +33,14 @@ public class PostOffice {
         return mailBoxes.isEmpty();
     }
 
+
     /**
      * remove the queue of a microService.
      * use when this microService unregistered
      * @param subscriber a queue of a MicroService to remove
      */
     public synchronized void remove(BlockingQueue<Message> subscriber){
-        if (mailBoxes.contains(subscriber)) mailBoxes.remove(subscriber);
+       mailBoxes.remove(subscriber);
     }
 
     /**
@@ -55,11 +56,13 @@ public class PostOffice {
      * send a Broadcast to all the MicroService that registered to this PostOffice.
      * @param b Broadcast to send.
      */
-    public synchronized void sendBrodcast(Broadcast b){
+
+    public synchronized void sendBroadcast(Broadcast b){
         for (BlockingQueue<Message> mailBox:mailBoxes) {
             mailBox.add(b);
         }
     }
+
 
     /**
      * send an event to the first microService in the queue,
@@ -67,7 +70,8 @@ public class PostOffice {
      * supporting the round-robbin manner.
      * @param e an event to pass to a microService.
      */
-    public synchronized void sendEvant(Event e){
+    public synchronized void sendEvent(Event e){
+
         BlockingQueue<Message> msQueue = mailBoxes.remove();
         mailBoxes.add(msQueue);
         msQueue.add(e);

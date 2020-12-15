@@ -1,12 +1,5 @@
 package bgu.spl.mics.application.passiveObjects;
 
-
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.application.services.C3POMicroservice;
-import bgu.spl.mics.application.services.HanSoloMicroservice;
-import bgu.spl.mics.application.services.LeiaMicroservice;
-import bgu.spl.mics.application.services.R2D2Microservice;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -45,7 +38,6 @@ public class Diary {
 
     public void setHanSoloFinish() {
         HanSoloFinish = System.currentTimeMillis();
-        System.out.println("im in HanFinish");
     }
 
     public long getC3POFinish() {
@@ -54,7 +46,6 @@ public class Diary {
 
     public void setC3POFinish() {
         C3POFinish = System.currentTimeMillis();
-        System.out.println("im in C3POFinish");
     }
 
     public long getR2D2Deactivate() {
@@ -63,7 +54,6 @@ public class Diary {
 
     public void setR2D2Deactivate() {
         R2D2Deactivate = System.currentTimeMillis();
-        System.out.println("im in R2D2Deactivate");
     }
 
     public long getLeiaTerminate() {
@@ -72,7 +62,6 @@ public class Diary {
 
     public void setLeiaTerminate() {
         LeiaTerminate = System.currentTimeMillis();
-        System.out.println("im in LeiaTerminate");
     }
 
     public long getHanSoloTerminate() {
@@ -82,7 +71,6 @@ public class Diary {
 
     public void setHanSoloTerminate() {
         HanSoloTerminate = System.currentTimeMillis();
-        System.out.println("im in HanTerminate");
     }
 
     public long getC3POTerminate() {
@@ -91,7 +79,6 @@ public class Diary {
 
     public void setC3POTerminate() {
         C3POTerminate = System.currentTimeMillis();
-        System.out.println("im in C3POTerminate");
     }
 
     public long getR2D2Terminate() {
@@ -100,7 +87,6 @@ public class Diary {
 
     public void setR2D2Terminate() {
         R2D2Terminate = System.currentTimeMillis();
-        System.out.println("im in R2D2Terminate");
     }
 
     public long getLandoTerminate() {
@@ -109,7 +95,6 @@ public class Diary {
 
     public void setLandoTerminate() {
         LandoTerminate = System.currentTimeMillis();
-        System.out.println("im in LandoTerminate");
     }
 
     public int getTotalAttacks() {
@@ -118,6 +103,5 @@ public class Diary {
 
     public void setTotalAttacks() {
         totalAttacks.getAndAdd(1);
-        System.out.println("totalAttacks value: "+getTotalAttacks());
     }
 }

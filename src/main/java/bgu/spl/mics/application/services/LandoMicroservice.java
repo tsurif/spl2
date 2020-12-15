@@ -16,10 +16,12 @@ import sun.awt.windows.ThemeReader;
 public class LandoMicroservice  extends MicroService {
     private long sleepDuration;
     private final Callback<BombDestroyerEvent> bombCallBack= new Callback<BombDestroyerEvent>() {
-
+        /**
+         * Lando send a bomb destroyer(sleep) and then resolve the bomb destroyer event
+         * @param event
+         */
         @Override
         public void call(BombDestroyerEvent event) {
-            //TODO: complete this
             try {
                 Thread.sleep(sleepDuration);
                 MessageBusImpl.getInstance().complete(event,event.expectedResult);
@@ -29,6 +31,10 @@ public class LandoMicroservice  extends MicroService {
     };
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setLandoTerminate();

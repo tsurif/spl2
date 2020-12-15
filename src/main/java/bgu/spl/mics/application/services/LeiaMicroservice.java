@@ -23,31 +23,20 @@ import java.util.List;
 
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
-	private int accomplishCount;
 	private List<Future> attackFutures;
 	private Future<Boolean> r2d2Future;
 
     private final Callback<TerminateBroadcast> terminateCallback =new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setLeiaTerminate();
             terminate();
         }
     };
-
-//    private final Callback<AccomplishBroadcast> accomplishCallback=new Callback<AccomplishBroadcast>() {
-//        @Override
-//        public void call(AccomplishBroadcast c) {
-//            accomplishCount++;
-//            if(accomplishCount == attacks.length) {
-//                r2d2Future = sendEvent(new DeactivationEvent());
-//                if (r2d2Future.get()) {
-//                    sendEvent(new BombDestroyerEvent());
-//                }
-//            }
-//
-//        }
-//    };
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 
@@ -56,27 +45,20 @@ public class LeiaMicroservice extends MicroService {
             a.sort();
         }
         attackFutures = new LinkedList<>();
-		accomplishCount = 0;
-
-
     }
 
     @Override
     protected void initialize() {
-        System.out.println("Leia start initialize");
         try {
             Thread.sleep(1000);
         }catch (InterruptedException e){}
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
-        //subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack att:attacks) {
-            System.out.println(name + " send attack");
             sendAttackEvent(att);
         }
 
         while(!attackFutures.isEmpty()){
             attackFutures.remove(0).get();
-            System.out.println("-------------------------------------attack sucsses--------------------------------------");
         }
         r2d2Future = sendEvent(new DeactivationEvent());
         if (r2d2Future.get()) {

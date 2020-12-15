@@ -3,7 +3,6 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Diary;
@@ -19,22 +18,27 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 public class R2D2Microservice extends MicroService {
     private long sleepDuration;
     private final Callback<DeactivationEvent> deactivateCallBack= new Callback<DeactivationEvent>() {
-
+        /**
+         * R2D2 deactivate the shields(sleep) and then resolve the Deactivate event
+         * @param event
+         */
         @Override
         public void call(DeactivationEvent event) {
-            //TODO: complete this
             try {
                 Thread.sleep(sleepDuration);
                 Diary.getInstance().setR2D2Deactivate();
 
                 MessageBusImpl.getInstance().complete(event,event.expectedResult);
-                //sendEvent(new BombDestroyerEvent());// TODO do i need to save the future?
 
             }catch(InterruptedException e){}
         }
     };
 
     private final Callback<TerminateBroadcast> terminateCallback=new Callback<TerminateBroadcast>() {
+        /**
+         * the microservice commit termination
+         * @param c
+         */
         @Override
         public void call(TerminateBroadcast c) {
             Diary.getInstance().setR2D2Terminate();
@@ -48,7 +52,6 @@ public class R2D2Microservice extends MicroService {
 
     @Override
     protected void initialize() {
-        //System.out.println("R2D2 start initialize");
         subscribeEvent(DeactivationEvent.class,deactivateCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
     }
