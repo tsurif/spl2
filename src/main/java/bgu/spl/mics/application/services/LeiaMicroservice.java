@@ -63,20 +63,20 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        System.out.println("Leia start initialize");
+//        System.out.println("Leia start initialize");
         try {
             Thread.sleep(1000);
         }catch (InterruptedException e){}
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
         //subscribeBroadcast(AccomplishBroadcast.class,accomplishCallback);
         for (Attack att:attacks) {
-            System.out.println(name + " send attack");
+//            System.out.println(name + " send attack");
             sendAttackEvent(att);
         }
 
         while(!attackFutures.isEmpty()){
             attackFutures.remove(0).get();
-            System.out.println("-------------------------------------attack sucsses--------------------------------------");
+//            System.out.println("-------------------------------------attack sucsses--------------------------------------");
         }
         r2d2Future = sendEvent(new DeactivationEvent());
         if (r2d2Future.get()) {

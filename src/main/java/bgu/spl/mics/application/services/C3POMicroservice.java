@@ -25,7 +25,7 @@ public class C3POMicroservice extends MicroService {
         @Override
         public void call(AttackEvent event) {
             //TODO: complete this
-            System.out.println("C3PO working on Attack");
+//            System.out.println("C3PO working on Attack");
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
             try {
                 Thread.sleep(event.attack.getDuration());
@@ -56,13 +56,13 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        System.out.println("c3po start initialize");
+//        System.out.println("c3po start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
 
 //        try{
 //            Thread.sleep(5000);
 //        }catch (InterruptedException e){}
-        System.out.println("c3po end initialize");
+//        System.out.println("c3po end initialize");
     }
 }

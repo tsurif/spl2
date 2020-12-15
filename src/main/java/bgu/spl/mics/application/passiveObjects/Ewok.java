@@ -35,7 +35,7 @@ public class Ewok {
     public synchronized void release() {//throws IllegalAccessException {
         //if(available) throw new IllegalAccessException("\"one shuold not release an Ewok - if free the ewok is\" m. Yoda");//TODO throws exeption is available = true?
         available = true;
-        System.out.println("Ewok num " + serialNumber + " dismiss" );
+//        System.out.println("Ewok num " + serialNumber + " dismiss" );
         notifyAll();
     }
 }

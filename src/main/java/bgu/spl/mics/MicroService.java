@@ -180,7 +180,7 @@ public abstract class MicroService implements Runnable {
     	while(!isTerminated) {//while(!Thread.correntTheard.isInterrupted()){
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this);
-                System.out.println(name+" recive massege");
+//                System.out.println(name+" recive massege");
                 Callback callback = hashMap.get(message.getClass());
                 callback.call(message);
             }catch (InterruptedException e){

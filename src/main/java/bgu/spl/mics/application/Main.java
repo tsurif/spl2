@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class Main {
 	public static void main(String[] args) {
+		System.out.println("started");
 		Gson gson = new Gson();
 		Input input=null;
 		try (Reader reader = new FileReader(args[0]))
@@ -76,6 +77,6 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		int stop=0;
+		System.out.println("finished");
 	}
 }

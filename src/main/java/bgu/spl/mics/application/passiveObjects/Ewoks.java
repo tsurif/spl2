@@ -29,10 +29,10 @@ public class Ewoks {
     }
 
     public void acquire(List<Integer> ewoksToUse, String name){//assuming ewoksTouse is sorted
-        System.out.println("Ewoks resiving request By" + name);
+//        System.out.println("Ewoks resiving request By" + name);
         for (Integer i:ewoksToUse) {
             ewoksArr[i].acquire();
-            System.out.println("Ewok num " + i + " calls for duty to " + name );
+//            System.out.println("Ewok num " + i + " calls for duty to " + name );
         }
     }
 

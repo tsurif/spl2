@@ -27,7 +27,7 @@ public class HanSoloMicroservice extends MicroService {
         @Override
         public void call(AttackEvent event) {
             //TODO: complete this
-            System.out.println("Han working on Attack");
+//            System.out.println("Han working on Attack");
             Ewoks.getInstance().acquire(event.attack.getSerials(), name);
             try {
                 Thread.sleep(event.attack.getDuration());
@@ -61,9 +61,9 @@ public class HanSoloMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        System.out.println("Han start initialize");
+//        System.out.println("Han start initialize");
         subscribeEvent(AttackEvent.class,attackCallBack);
         subscribeBroadcast(TerminateBroadcast.class,terminateCallback);
-        System.out.println("Han end initialize");
+//        System.out.println("Han end initialize");
     }
 }
