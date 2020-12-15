@@ -1,6 +1,5 @@
 package bgu.spl.mics;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,7 +68,7 @@ public class MessageBusImpl implements MessageBus {
 	public void sendBroadcast(Broadcast b) {
 		PostOffice postOffice = messageTypeHash.get(b.getClass());
 		if (postOffice == null) throw new IllegalArgumentException("No one subscribed to this event");
-		postOffice.sendBrodcast(b);
+		postOffice.sendBroadcast(b);
 	}
 
 	@Override
@@ -83,7 +82,7 @@ public class MessageBusImpl implements MessageBus {
 			future = new Future<>();
 			futureHashMap.put(e, future);
 //		}
-		messageTypeHash.get(e.getClass()).sendEvant(e);
+		messageTypeHash.get(e.getClass()).sendEvent(e);
 		return future;
 	}
 

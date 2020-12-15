@@ -19,19 +19,19 @@ public class PostOffice {
     }
 
     public synchronized void remove(BlockingQueue<Message> q){
-        if (mailBoxes.contains(q)) mailBoxes.remove(q);
+        mailBoxes.remove(q);
     }
 
     public synchronized void add(BlockingQueue<Message> subscriber){
         mailBoxes.add(subscriber);
     }
-    public synchronized void sendBrodcast(Broadcast b){
+    public synchronized void sendBroadcast(Broadcast b){
         for (BlockingQueue<Message> mailBox:mailBoxes) {
             mailBox.add(b);
         }
     }
 
-    public synchronized void sendEvant(Event e){
+    public synchronized void sendEvent(Event e){
         BlockingQueue<Message> msQueue = mailBoxes.remove();
         mailBoxes.add(msQueue);
         msQueue.add(e);
